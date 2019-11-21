@@ -15,6 +15,7 @@ namespace CheeseWise.DB
         public DbSet<Company> Companies { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Account> Accounts { get; set; }
 
         public CheeseWiseDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {

@@ -10,7 +10,7 @@ using CheeseWise.Models;
 
 namespace CheeseWise.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -74,16 +74,18 @@ namespace CheeseWise.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+        [HttpPost]
+        public async Task<ActionResult<User>> PostUser(User userData)
+        {
+            if (userData != null)
+            {
+
+                _context.Users.Add(userData);
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok();
         }
 
         // DELETE: api/Users/5

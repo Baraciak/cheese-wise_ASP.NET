@@ -8,6 +8,8 @@ import ListCompanies from './Views/ListCompanies';
 import Company from './Views/Company';
 
 import './static/css/appTemplate.css';
+import Register from './Views/Register';
+import Login from './Views/Login';
 
 
 class AppTemplate extends Component {
@@ -15,7 +17,6 @@ class AppTemplate extends Component {
     render() { 
         return ( 
           <Layout>
-
             <Switch>
                 <Route path={"/"} exact component={Main} />
                 <Route path={"/category/:categoryId"} exact
@@ -24,8 +25,9 @@ class AppTemplate extends Component {
                 <Route path={"/company/:companyId"} exact 
                         render={props => <Company companyId={props.match.params.companyId} />}
                 />
+                <Route path={"/account/register"} exact component={Register} />
+                <Route path={"/account/login"} exact component={Login} />
             </Switch>
-
           </Layout>
         );
     }

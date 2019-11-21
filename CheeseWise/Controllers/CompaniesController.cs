@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
@@ -31,7 +27,6 @@ namespace CheeseWise.Controllers
             var companies = await _context.Companies.ToListAsync();
 
             return Ok(companies);
-
         }
 
         // GET: api/Companies/5
@@ -58,15 +53,10 @@ namespace CheeseWise.Controllers
         [HttpGet("Category/{id}")]
         public async Task<List<Company>> GetCompaniesByCategoryId(int id)
         {
-//            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             var companies = await _context.Companies
-//                .Where(b => b.Category.Id== category.Id)
-                //to check
+                .Where(b => b.Category.Id== category.Id)
                 .ToListAsync();
-
-
-            Debug.WriteLine(companies.ToString());
-//            Console.WriteLine(companies.ToString());
 
             return companies;
         }
@@ -112,7 +102,7 @@ namespace CheeseWise.Controllers
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+            return CreatedAtAction("GetCompany", new {id = company.Id}, company);
         }
 
         // DELETE: api/Companies/5
@@ -135,7 +125,5 @@ namespace CheeseWise.Controllers
         {
             return _context.Companies.Any(e => e.Id == id);
         }
-
-
     }
 }
