@@ -33,6 +33,7 @@ namespace CheeseWise.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
         {
+            
             var company = await _context.Companies
                 .Where(b => b.Id == id)
                 .Include(a => a.Owner)
@@ -54,6 +55,7 @@ namespace CheeseWise.Controllers
         public async Task<List<Company>> GetCompaniesByCategoryId(int id)
         {
             var category = await _context.Categories.FindAsync(id);
+
             var companies = await _context.Companies
                 .Where(b => b.Category.Id== category.Id)
                 .ToListAsync();

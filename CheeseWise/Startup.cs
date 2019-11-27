@@ -1,12 +1,17 @@
+using System.Text;
 using CheeseWise.DB;
+using CheeseWise.Services;
+using CheeseWise.Services.Abstraction;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CheeseWise
 {
@@ -34,10 +39,16 @@ namespace CheeseWise
             services.AddDbContext<CheeseWiseDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DbConnString")));
 
-//            here add sample data
-//            var context = new CheeseWiseDbContext();
-//            context.SaveChanges();
+            //            here add sample data
+            //            var context = new CheeseWiseDbContext();
+            //            context.SaveChanges();t).
 
+            services.AddSingleton<IAuthService>(
+                new AuthService(
+                    Configuration.GetValue<string>("JWTSecretKey"),
+                    Configuration.GetValue<int>("JWTLifespan")
+                )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,9 +72,9 @@ namespace CheeseWise
             app.UseRouting();
 
             app.UseCors(builder => builder.WithOrigins("https://localhost:44356")
-                                    .AllowAnyMethod()
-                                    .AllowAnyHeader()
-                                    .AllowAnyOrigin());
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin());
 
             app.UseEndpoints(endpoints =>
             {
@@ -81,6 +92,9 @@ namespace CheeseWise
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+            //toke authentication
+            app.UseAuthentication();
+//            app.UseMvc();
         }
     }
 }

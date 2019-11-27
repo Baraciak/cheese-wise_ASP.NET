@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import history from '../history';
 
 
 class Login extends Component {
@@ -8,7 +9,7 @@ class Login extends Component {
             <form onSubmit={this.handleLogin}>
                 <div className="form-group">
                     <label htmlFor="email">Email address</label>
-                    <input name="email" type="email" class="form-control" id="email" placeholder="Enter email"/>
+                    <input name="email" type="email" className="form-control" id="email" placeholder="Enter email"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Password</label>
@@ -28,7 +29,9 @@ class Login extends Component {
             Password: data.get("password")
         }
 
-        fetch("https://localhost:44356/api/accounts/login", 
+        //sends login data to verify it on servewr side
+        //which returns token
+        fetch("https://localhost:44356/api/auth/login", 
             {
                 method: 'post',
                 headers: {
@@ -39,8 +42,10 @@ class Login extends Component {
             }
         )
         .then(res => res.json())
-        // just console.log need to set some session to hold logged user
-        .then(resJson => console.log(resJson))
+        .then(resJson => sessionStorage.setItem('token', resJson.token))
+        .then(setTimeout(() => {
+            history.push('/')
+        },1000))
         .catch(error => console.log(error));
     }
 }

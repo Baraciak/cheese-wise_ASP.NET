@@ -12,6 +12,7 @@ body
 
 .up-btn
 {
+
     margin-left: auto;
     margin-right:auto;
     width: 62px;
@@ -20,12 +21,26 @@ body
     right: 40px;
 }
 
-.back-btn a i
+.up-btn button
 {
+    background: transparent;
+    border: none;
+}
+
+.back-btn button
+{
+    background: transparent;
+    border: none;
+}
+
+.back-btn button i
+{
+    background: transparent;
+    border: none;
     margin-left: 150px;
 }
 
-a i 
+button i 
 {
     font-size: 60px;
     color: rgb(63, 63, 63);
@@ -33,14 +48,14 @@ a i
 
 }
 
-a i:hover
+button i:hover
 {
     cursor: pointer;
     color: rgb(85, 85, 85);
     transform: scale(1.2);
 }
 
-a i:active
+button i:active
 {
     color: rgb(44, 43, 43);
     transition: transform ease-in-out .1s;

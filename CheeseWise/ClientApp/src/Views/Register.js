@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import history from '../history';
 
 
 class Register extends Component {
@@ -16,7 +17,7 @@ class Register extends Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="email">Email address</label>
-                    <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email"/>
+                    <input name="email" type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Email"/>
                     <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group">
@@ -30,29 +31,32 @@ class Register extends Component {
             </form>
         );
     }
+    
     handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
         const user = {
             Name: data.get("name"),
             Surname: data.get("surname"),
-            Email: data.get("email")
-        }
-        const accountData = {
             Email: data.get("email"),
-            Password: data.get("password"),
-            Owner: user
+            Password: data.get("password")
         }
+        // const accountData = {
+        //     Email: data.get("email"),
+        //     Password: data.get("password"),
+        //     Owner: user
+        // }
 
-        fetch("https://localhost:44356/api/accounts/register", 
+        fetch("https://localhost:44356/api/auth/register", 
             {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(accountData)
+                body: JSON.stringify(user)
             }
         )
+        .then(history.push("/account/login"))
         .catch(error => console.log(error));
     }
 

@@ -4,16 +4,18 @@ import BackBtn from './common/backBtn';
 import Footer from './common/footer';
 import UpBtn from './common/upBtn';
 import Navbar from './common/navbar';
-import { BrowserRouter as Router} from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import history from '../history';
 
 export class Layout extends Component {
   static displayName = Layout.name;
 
   render () {
+    
     return (
-        <Router>
+        <Router history={history}>
           <React.Fragment>
-            <Navbar/>
+            <Navbar onLogout={this.props.onLogout} user={this.props.user}/>
               <div id="site-wrapper">
                 <BackBtn />
                 <div className="container">

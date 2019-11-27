@@ -24,7 +24,7 @@ class App extends Component {
     }
 
   render() { 
-    return ( 
+      return ( 
         <React.Fragment>
           <h2>Choose a category to list available services:</h2>
           <br />
@@ -44,15 +44,20 @@ class App extends Component {
   componentDidMount = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.setCategoriesApi();
+
+    if(sessionStorage.token !== undefined){
+      console.log(sessionStorage.token);
+      this.props.tokenAuth();
+    }
+
   }
 
     setCategoriesApi = () => {
         fetch("https://localhost:44356/api/Categories", {
         'mode': 'cors'})
-      .then(res => res.json())
-      .then(resJson => this.setState({categories: resJson}))
-      .catch(err => console.log(err));
-    
+        .then(res => res.json())
+        .then(resJson => this.setState({categories: resJson}))
+        .catch(err => console.log(err));
     }
 }
  
