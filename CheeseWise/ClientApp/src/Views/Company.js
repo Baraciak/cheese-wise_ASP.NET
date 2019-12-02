@@ -4,8 +4,6 @@ import CompanyInfo from '../_components/vievCompany/companyInfo';
 import TextBox from '../_components/vievCompany/textBox';
 import LoadingLogo from '../_components/common/loadingLogo';
 import ServicesTable from '../_components/vievCompany/servicesTable';
-// import { authenticationService } from '../_services/authService';
-
  
 export default class Company extends Component {
     state = { 
@@ -37,7 +35,7 @@ export default class Company extends Component {
                         <TextBox description={this.state.company.description}/>   
                         <br />
                         <ServicesTable services={this.state.services}/>
-                        {!this.state.editMode
+                        {!this.state.editMode // && currentUser == company.owner.id
                         ?
                         <button className="btn btn-primary" onClick={this.handleEdit}>Edit</button>
                         :
@@ -54,9 +52,12 @@ export default class Company extends Component {
 
     componentDidMount = () =>{
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        //here
+        // console.log(this.props);
+        // if(this.props.parent)
         this.fetchCompany(this.props.companyId);
         this.fetchServices(this.props.companyId);
-        // console.log(authenticationService.currentUserValue, 'jp');
+
     }
 
     fetchCompany = companyId =>{

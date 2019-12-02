@@ -1,15 +1,18 @@
 import history from '../_helpers/history';
-import { BehaviorSubject } from 'rxjs';
+import store from '../_redux/store';
+import {userActions} from '../_redux/user/duck';
 
-const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
 export const authenticationService = {
     login,
     logout,
     loginByToken,
-    currentUser: currentUserSubject.asObservable(),
-    get currentUserValue () { return currentUserSubject.value }
+    getCurrentUser
 };
+
+function getCurrentUser(){
+    return store.getState().currentUser
+}
 
 function login(accountData) {
     const requestOptions = 
@@ -31,7 +34,8 @@ function login(accountData) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 sessionStorage.setItem('token', resJson.token);
                 sessionStorage.setItem('currentUser', JSON.stringify(resJson.owner));
-                currentUserSubject.next(resJson.owner);
+                //redux
+                store.dispatch(userActions.add(resJson.owner));
             }
         })
         .then(setTimeout(function(){
@@ -58,7 +62,8 @@ async function loginByToken(){
             //set refreshed token
             sessionStorage.setItem("token", resJson.token);
             sessionStorage.setItem("currentUser", resJson.user);
-            currentUserSubject.next(resJson.user);
+            //redux
+            store.dispatch(userActions.add(resJson.user));
         })
         .catch(error => console.log(error))
     }else{
@@ -71,5 +76,6 @@ function logout() {
     // remove user from local storage to log user out
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('currentUser');
-    currentUserSubject.next(null);
+    //redux
+    store.dispatch(userActions.reset());
 }

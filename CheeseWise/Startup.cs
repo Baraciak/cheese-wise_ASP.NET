@@ -46,7 +46,7 @@ namespace CheeseWise
 
             //            here add sample data
             //            var context = new CheeseWiseDbContext();
-            //            context.SaveChanges();t).
+            //            context.SaveChanges();
 
             
             var symmetricSecurityKey =
@@ -57,9 +57,10 @@ namespace CheeseWise
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
+//                ValidateLifetime = true,
                 ValidAudience = Configuration["Jwt:Site"],
                 ValidIssuer = Configuration["Jwt:Site"],
-                IssuerSigningKey = symmetricSecurityKey
+                IssuerSigningKey = symmetricSecurityKey,
             };
 
             services.AddAuthentication(option =>

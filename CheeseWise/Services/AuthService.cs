@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using CheeseWise.Models.View;
 using CheeseWise.Services.Abstraction;
 using CryptoHelper;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Principal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -36,7 +33,7 @@ namespace CheeseWise.Services
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var expirationTime = DateTime.UtcNow.AddSeconds(_jwtLifespan);
+            var expirationTime = DateTime.UtcNow.AddMinutes(_jwtLifespan);
 
             var claims = new List<Claim>
             {
@@ -47,7 +44,7 @@ namespace CheeseWise.Services
                 issuer: _configuration["Jwt:Site"],
                 audience: _configuration["Jwt:Site"],
                 expires: expirationTime,
-                signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256),
+                signingCredentials: credentials,
                 claims: claims
             );
 

@@ -47,7 +47,6 @@ namespace CheeseWise.Controllers
             var token = _authService.GetToken(account.Owner.Id);
 
             return Ok(new { token, account.Owner });
-
         }
 
 
@@ -86,7 +85,8 @@ namespace CheeseWise.Controllers
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public ActionResult<bool> GetUserByToken([FromBody] AuthData data)
         {
-            if (data.Token == null) return BadRequest(new {error = true, token = "no token specified"});
+            if (data.Token == null) return BadRequest(new { error = true, token = "no token specified" });
+
             var userId = _authService.DecodeToken(data.Token);
             var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId).Result;
 
@@ -98,7 +98,7 @@ namespace CheeseWise.Controllers
             //pass refreshed token
             var newToken = _authService.GetToken(userId);
 
-            return Ok(new {error = false, token = newToken, user = user});
+            return Ok(new {error = false, token = newToken, user});
         }
     }
 }

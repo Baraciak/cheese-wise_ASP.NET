@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Router } from 'react-router-dom';
 import {Route, Switch} from 'react-router';
+import { connect } from 'react-redux';
 
 import AccountOverview from './Views/AccountOverview';
 import ListCompanies from './Views/ListCompanies';
@@ -17,32 +18,22 @@ import {authenticationService} from "./_services/authService"
 import history from './_helpers/history';
 import './static/css/appTemplate.css';
 
-
 class AppTemplate extends Component {
-  	constructor(props) {
-		super(props);
-
-		this.state = {
-			currentUser: null
-		};
-	}
-
+    //runs at page refresh
   	componentDidMount() {
-		//runs at page refresh
 		authenticationService.loginByToken();
-		authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
   	}
 
   	handleLogout() {
 		authenticationService.logout();
-		history.push('/login');
-  	}
-
+		
+	}
+	
   	render() {         
     	return (         
       		<Router history={history}>
 
-        		<Layout onLogout={this.handleLogout} currentUser={this.state.currentUser}>
+        		<Layout onLogout={this.handleLogout} currentUser={this.props.currentUser}>
           			<Switch>
 							<App>
 								<Route exact path={"/"} component={Main}/>
@@ -57,7 +48,7 @@ class AppTemplate extends Component {
 
 								<Route path={"/account/login"} exact component={Login}/>
 
-								<ProtectedRoute exact path="/account/overview" component={AccountOverview} />
+								<ProtectedRoute  path="/account/overview" exact component={AccountOverview} />
 							</App>
          			 </Switch>
        			</Layout>
@@ -65,5 +56,9 @@ class AppTemplate extends Component {
     	);
   	}
 }
+
+const mapStateToProps = state => ({
+	currentUser: state.currentUser
+});
  
-export default AppTemplate;
+export default connect(mapStateToProps, {})(AppTemplate);

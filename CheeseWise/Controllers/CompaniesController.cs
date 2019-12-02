@@ -63,6 +63,19 @@ namespace CheeseWise.Controllers
             return companies;
         }
 
+        //custom route
+        // GET: api/Companies/Category/5
+        [HttpGet("User/{id}")]
+        public async Task<ActionResult<Company>> GetCompanyByUserId(int id)
+        {
+
+            var company = await _context.Companies
+                .Where(b => b.Owner.Id == id)
+                .FirstOrDefaultAsync();
+
+            return company;
+        }
+
         // PUT: api/Companies/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
