@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CompaniesTable from '../components/companies/companiesTable';
+import CompaniesTable from '../_components/companies/companiesTable';
 
 class ListCompanies extends Component {
     state = { 

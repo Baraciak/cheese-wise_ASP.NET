@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import history from '../history';
+import history from '../_helpers/history';
 
 
 class Register extends Component {
@@ -22,7 +22,7 @@ class Register extends Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Password</label>
-                    <input name="password" type="password" class="form-control" id="password" placeholder="Password" />
+                    <input name="password" type="password" className="form-control" id="password" placeholder="Password" />
                     <small id="emailHelp" className="form-text text-muted">
                         Password should contain at least: 8 signs, one upper case letter, one lower case letter, one digit
                     </small>

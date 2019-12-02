@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 const Navbar = (props) => {
+    const {currentUser} = props;
     return ( 
         <React.Fragment>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -13,7 +14,7 @@ const Navbar = (props) => {
                             </nav>
                         </li>
                     </ul>
-                    {props.user == null ? 
+                    {currentUser == null ? 
                         <React.Fragment>
                             <nav className="navbar navbar-dark bg-dark">
                                 <Link className="navbar-brand" to="/account/register"><small>Register</small></Link>
@@ -25,10 +26,10 @@ const Navbar = (props) => {
                         :
                         <React.Fragment>
                             <nav className="navbar navbar-dark bg-dark">
-                    <Link className="navbar-brand" to="/account/overview"><small>Logged as {props.user.name}</small></Link>
+                    <Link className="navbar-brand" to="/account/overview"><small>Logged as {currentUser.name}</small></Link>
                             </nav>
                             <nav className="navbar navbar-dark bg-dark">
-                                <Link onClick={props.onLogout} className="navbar-brand" to="/account/register"><small>Logout</small></Link>
+                                <Link onClick={props.onLogout} className="navbar-brand" to="/"><small>Logout</small></Link>
                             </nav>
                         </React.Fragment>
                     }

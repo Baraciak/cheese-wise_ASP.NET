@@ -1,17 +1,22 @@
+using System;
 using System.Text;
 using CheeseWise.DB;
 using CheeseWise.Services;
 using CheeseWise.Services.Abstraction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
 
 namespace CheeseWise
 {
@@ -28,7 +33,7 @@ namespace CheeseWise
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllersWithViews();
+//            services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -43,10 +48,52 @@ namespace CheeseWise
             //            var context = new CheeseWiseDbContext();
             //            context.SaveChanges();t).
 
+            
+            var symmetricSecurityKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"]));
+
+            var tokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidAudience = Configuration["Jwt:Site"],
+                ValidIssuer = Configuration["Jwt:Site"],
+                IssuerSigningKey = symmetricSecurityKey
+            };
+
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = tokenValidationParameters;
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Bearer", policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser().Build();
+                });
+            });
+
+
+            services.AddMvc(option => option.EnableEndpointRouting = false)
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+
+            //adding parameters for authService constructor
             services.AddSingleton<IAuthService>(
                 new AuthService(
-                    Configuration.GetValue<string>("JWTSecretKey"),
-                    Configuration.GetValue<int>("JWTLifespan")
+                    jwtSecret: Configuration["JWT:SecretKey"],
+                    jwtLifespan: Convert.ToInt32(Configuration["JWT:Lifespan"]),
+                    configuration: Configuration,
+                    tokenValidationParameters: tokenValidationParameters
                 )
             );
         }
@@ -54,6 +101,8 @@ namespace CheeseWise
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -69,13 +118,19 @@ namespace CheeseWise
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseRouting();
+
 
             app.UseCors(builder => builder.WithOrigins("https://localhost:44356")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowAnyOrigin());
 
+
+
+            app.UseAuthorization();
+            app.UseAuthentication();
+
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -92,9 +147,8 @@ namespace CheeseWise
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
-            //toke authentication
-            app.UseAuthentication();
-//            app.UseMvc();
+
+            app.UseMvc();
         }
     }
 }

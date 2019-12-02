@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import Tiles from '../components/main/tiles';
-import SearchBar from '../components/main/searchBar'
-import LoadingLogo from '../components/common/loadingLogo';
+import Tiles from '../_components/main/tiles';
+import SearchBar from '../_components/main/searchBar'
+import LoadingLogo from '../_components/common/loadingLogo';
 
 import '../static/css/main.css'
 
@@ -44,12 +44,6 @@ class App extends Component {
   componentDidMount = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.setCategoriesApi();
-
-    if(sessionStorage.token !== undefined){
-      console.log(sessionStorage.token);
-      this.props.tokenAuth();
-    }
-
   }
 
     setCategoriesApi = () => {

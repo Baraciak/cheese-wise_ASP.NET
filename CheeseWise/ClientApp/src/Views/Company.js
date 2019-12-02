@@ -1,31 +1,49 @@
 import React, { Component } from 'react';
 import '../static/css/company.css';
-import CompanyInfo from '../components/vievCompany/companyInfo';
-import TextBox from '../components/vievCompany/textBox';
-import LoadingLogo from '../components/common/loadingLogo';
-import ServicesTable from '../components/vievCompany/servicesTable';
+import CompanyInfo from '../_components/vievCompany/companyInfo';
+import TextBox from '../_components/vievCompany/textBox';
+import LoadingLogo from '../_components/common/loadingLogo';
+import ServicesTable from '../_components/vievCompany/servicesTable';
+// import { authenticationService } from '../_services/authService';
 
-class Company extends Component {
+ 
+export default class Company extends Component {
     state = { 
         company:{},
         services:[],
         isCompanyLoaded: false,
-        isServicesLoaded: false
+        isServicesLoaded: false,
+        editMode: false
+    }
+
+    handleEdit = () =>{
+        this.setState({editMode: true});
+        
+    }
+
+    handleSave = () =>{
+        this.setState({editMode: false});
+        //fetch save data
     }
 
     render() { 
-        // console.log(this.state.company);
-        // console.log(this.state.services);
         const isStateLoaded = this.state.isCompanyLoaded && this.state.isServicesLoaded; 
         return ( 
                 <React.Fragment>
                     {isStateLoaded
                     ?
                     <React.Fragment>
-                        <CompanyInfo company={this.state.company}/>
+                        <CompanyInfo editMode={this.state.editMode} company={this.state.company}/>
                         <TextBox description={this.state.company.description}/>   
                         <br />
                         <ServicesTable services={this.state.services}/>
+                        {!this.state.editMode
+                        ?
+                        <button className="btn btn-primary" onClick={this.handleEdit}>Edit</button>
+                        :
+                        <button className="btn btn-primary" onClick={this.handleSave}>Save</button>
+                        }
+                        
                     </React.Fragment>
                     :
                     <LoadingLogo />}
@@ -38,6 +56,7 @@ class Company extends Component {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         this.fetchCompany(this.props.companyId);
         this.fetchServices(this.props.companyId);
+        // console.log(authenticationService.currentUserValue, 'jp');
     }
 
     fetchCompany = companyId =>{
@@ -69,6 +88,4 @@ class Company extends Component {
             }))
         .catch(err => console.log(err));
     }
-}
- 
-export default Company;
+};

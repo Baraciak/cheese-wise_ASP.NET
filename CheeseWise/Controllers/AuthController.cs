@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using CheeseWise.DB;
 using CheeseWise.Models;
 using CheeseWise.Models.View;
 using CheeseWise.Services.Abstraction;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,17 +15,19 @@ namespace CheeseWise.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        IAuthService authService;
+        private readonly IAuthService _authService;
         private readonly CheeseWiseDbContext _context;
 
         public AuthController(IAuthService authService, CheeseWiseDbContext context)
         {
-            this.authService = authService;
-            this._context = context;
+            _authService = authService;
+            _context = context;
         }
 
+
+
         [HttpPost("login")]
-        public async Task<ActionResult<AuthData>> Login([FromBody] LoginViewModel model)
+        public ActionResult<AuthData> Login([FromBody] LoginViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -36,64 +36,69 @@ namespace CheeseWise.Controllers
                 .SingleOrDefault(acc => acc.Email == model.Email);
 
             if (account == null)
-            {
-                return BadRequest(new {email = "no user with this email"});
-            }
+                return NotFound(new {message = "Email or Password is Wrong"});
 
-            var passwordValid = authService.VerifyPassword(model.Password, account.Password);
+            var passwordValid = _authService.VerifyPassword(model.Password, account.Password);
             if (!passwordValid)
             {
-                return BadRequest(new {password = "invalid password"});
+                return NotFound(new { message = "Email or Password is Wrong" });
             }
 
-            return Ok(authService.GetAuthData(account.Owner.Id));
+            var token = _authService.GetToken(account.Owner.Id);
+
+            return Ok(new { token, account.Owner });
+
         }
+
+
 
         [HttpPost("register")]
         public ActionResult<AuthData> RegisterUser([FromBody] RegisterViewModel model)
         {
-//            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var emailUniq = _context.Accounts.SingleOrDefault(acc => acc.Email == model.Email);
             if (emailUniq != null) return BadRequest(new {email = "user with this email already exists"});
 
-//            var id = Guid.NewGuid();
             var user = new User
             {
                 Name = model.Name,
                 Surname = model.Surname,
-                Email = model.Email,
+                Email = model.Email
 
             };
             var account = new Account
             {
                 Owner = user,
                 Email = model.Email,
-                Password = authService.HashPassword(model.Password)
+                Password = _authService.HashPassword(model.Password)
             };
 
             _context.Users.Add(user);
             _context.Accounts.Add(account);
             _context.SaveChanges();
-//
-//            var id = account.Id;
-//            return authService.GetAuthData(id)
+
             return Ok();
         }
 
+
         [HttpPost("validate-token")]
-        public ActionResult<AuthData> GetUserByToken([FromBody] AuthData authData)
+        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
+        public ActionResult<bool> GetUserByToken([FromBody] AuthData data)
         {
-            if (authData.Token == null) return BadRequest(new { token = "no token specified"});
-            
-            string token = authData.Token;
-            int userId = authService.DecodeToken(token);
+            if (data.Token == null) return BadRequest(new {error = true, token = "no token specified"});
+            var userId = _authService.DecodeToken(data.Token);
+            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId).Result;
 
-            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                Unauthorized(new { error = true, token = "no token specified" });
+            }
 
+            //pass refreshed token
+            var newToken = _authService.GetToken(userId);
 
-            return Ok(user.Result);
+            return Ok(new {error = false, token = newToken, user = user});
         }
-
     }
 }

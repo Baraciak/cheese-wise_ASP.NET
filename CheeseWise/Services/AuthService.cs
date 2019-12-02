@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,6 +8,9 @@ using CheeseWise.Services.Abstraction;
 using CryptoHelper;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Principal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CheeseWise.Services
@@ -15,36 +19,40 @@ namespace CheeseWise.Services
     {
         private readonly string _jwtSecret;
         private readonly int _jwtLifespan;
-        public AuthService(string jwtSecret, int jwtLifespan)
+        private readonly IConfiguration _configuration;
+        private readonly TokenValidationParameters _tokenValidationParameters;
+        public AuthService(string jwtSecret,
+                            int jwtLifespan,
+                            IConfiguration configuration,
+                            TokenValidationParameters tokenValidationParameters)
         {
             this._jwtSecret = jwtSecret;
             this._jwtLifespan = jwtLifespan;
+            this._configuration = configuration;
+            this._tokenValidationParameters = tokenValidationParameters;
         }
 
-        public AuthData GetAuthData(int id)
+        public string GetToken(int id)
         {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var expirationTime = DateTime.UtcNow.AddSeconds(_jwtLifespan);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, Convert.ToString(id))
-                }),
-                Expires = expirationTime,
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret)),
-                    SecurityAlgorithms.HmacSha256Signature
-                )
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
 
-            return new AuthData
+            var claims = new List<Claim>
             {
-                Token = token,
-                TokenExpirationTime = ((DateTimeOffset)expirationTime).ToUnixTimeSeconds(),
-                Id = id
+                new Claim("Id", Convert.ToString(id))
             };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Site"],
+                audience: _configuration["Jwt:Site"],
+                expires: expirationTime,
+                signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256),
+                claims: claims
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
         }
 
         public string HashPassword(string password)
@@ -62,8 +70,11 @@ namespace CheeseWise.Services
         {
             var handler = new JwtSecurityTokenHandler();
             var decodedToken = handler.ReadJwtToken(jwtToken);
+//             SecurityToken secToken;
+//            handler.ValidateToken(jwtToken, _tokenValidationParameters, validatedToken: out secToken);
             //get userId stored in token
             int userId = Convert.ToInt32(decodedToken.Claims.ToList()[0].Value);
+//            int userId = 35;
 
             return userId;
         }

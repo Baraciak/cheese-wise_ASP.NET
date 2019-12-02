@@ -10,7 +10,7 @@ namespace CheeseWise.Services.Abstraction
     {
         string HashPassword(string password);
         bool VerifyPassword(string actualPassword, string hashedPassword);
-        AuthData GetAuthData(int id);
+        string GetToken(int id);
         int DecodeToken(string token);
     }
 }

@@ -1,63 +1,69 @@
 import React, { Component } from 'react';
-import { Layout } from './components/Layout';
-import {Route, Switch} from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import {Route, Switch} from 'react-router';
 
-import Main from './Views/Main';
+import AccountOverview from './Views/AccountOverview';
 import ListCompanies from './Views/ListCompanies';
-import Company from './Views/Company';
 import Register from './Views/Register';
+import Company from './Views/Company';
 import Login from './Views/Login';
+import Main from './Views/Main';
+import App from './App';
 
+import {Layout} from './_components/Layout';
+import {ProtectedRoute} from "./_components/protectedRoute"
+import {authenticationService} from "./_services/authService"
+
+import history from './_helpers/history';
 import './static/css/appTemplate.css';
 
 
-
 class AppTemplate extends Component {
-    state = { 
-      user: null
-    }
-    
-    render() { 
-        return ( 
-          <Layout onLogout={this.handleLogout} user={this.state.user}>
-            <Switch>
-                <Route path={"/"} exact 
-                    render={props => <Main tokenAuth={this.handleTokenAuthentication} />}
-                />
-                <Route path={"/category/:categoryId"} exact
-                       render={props => <ListCompanies categoryId={props.match.params.categoryId} />}
-                />
-                <Route path={"/company/:companyId"} exact 
-                       render={props => <Company companyId={props.match.params.companyId} />}
-                />
-                <Route path={"/account/register"} exact component={Register} />
-                <Route path={"/account/login"} exact component={Login} />
-            </Switch>
-          </Layout>
-        );
-    }
+  	constructor(props) {
+		super(props);
 
-    handleTokenAuthentication = () =>{
-      const authData = {Token: sessionStorage.token}
+		this.state = {
+			currentUser: null
+		};
+	}
 
-      fetch("https://localhost:44356/api/auth/validate-token", 
-      {
-          method: 'post',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(authData)
-      })
-      .then(res => res.json())
-      .then(resJson => this.setState({user: resJson}) )
-      .catch(error => console.log(error));
-    }
+  	componentDidMount() {
+		//runs at page refresh
+		authenticationService.loginByToken();
+		authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
+  	}
 
-    handleLogout = () =>{
-        this.setState({user: null});
-        sessionStorage.removeItem('token');
-    }
+  	handleLogout() {
+		authenticationService.logout();
+		history.push('/login');
+  	}
+
+  	render() {         
+    	return (         
+      		<Router history={history}>
+
+        		<Layout onLogout={this.handleLogout} currentUser={this.state.currentUser}>
+          			<Switch>
+							<App>
+								<Route exact path={"/"} component={Main}/>
+
+								<Route path={"/category/:categoryId"} exact 
+									render={props => <ListCompanies categoryId={props.match.params.categoryId} />}/>
+									
+								<Route path={"/company/:companyId"} exact 
+									render={props => <Company companyId={props.match.params.companyId}/>}/>
+
+								<Route path={"/account/register"} exact component={Register} />
+
+								<Route path={"/account/login"} exact component={Login}/>
+
+								<ProtectedRoute exact path="/account/overview" component={AccountOverview} />
+							</App>
+         			 </Switch>
+       			</Layout>
+      		</Router>
+    	);
+  	}
 }
  
 export default AppTemplate;

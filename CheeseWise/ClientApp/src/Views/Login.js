@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import history from '../history';
+import { authenticationService } from '../_services/authService';
 
 
 class Login extends Component {
-
     render(){
         return(
             <form onSubmit={this.handleLogin}>
@@ -20,7 +19,7 @@ class Login extends Component {
         );
     }
 
-    handleLogin = (event) => {
+    handleLogin = (event) =>{
         event.preventDefault();
         const data = new FormData(event.target);
 
@@ -28,25 +27,8 @@ class Login extends Component {
             Email: data.get("email"),
             Password: data.get("password")
         }
-
-        //sends login data to verify it on servewr side
-        //which returns token
-        fetch("https://localhost:44356/api/auth/login", 
-            {
-                method: 'post',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(accountData)
-            }
-        )
-        .then(res => res.json())
-        .then(resJson => sessionStorage.setItem('token', resJson.token))
-        .then(setTimeout(() => {
-            history.push('/')
-        },1000))
-        .catch(error => console.log(error));
+        
+        authenticationService.login(accountData);
     }
 }
 
