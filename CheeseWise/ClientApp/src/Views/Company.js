@@ -5,6 +5,7 @@ import TextBox from '../_components/vievCompany/textBox';
 import LoadingLogo from '../_components/common/loadingLogo';
 import ServicesTable from '../_components/vievCompany/servicesTable';
 import {authenticationService} from '../_services/authService'
+import history from "../_helpers/history";
  
 export default class Company extends Component {
     state = { 
@@ -27,6 +28,7 @@ export default class Company extends Component {
 
     render() { 
         const isStateLoaded = this.state.isCompanyLoaded && this.state.isServicesLoaded; 
+
         return ( 
                 <React.Fragment>
                     {isStateLoaded
@@ -36,13 +38,18 @@ export default class Company extends Component {
                         <TextBox description={this.state.company.description}/>   
                         <br />
                         <ServicesTable services={this.state.services}/>
-                        {!this.state.editMode && authenticationService.getCurrentUser().id === this.state.company.id
+                        {/* if curr user is owner of this company render edit/save btns*/}
+                        {history.location.pathname === "/account/overview"
                         ?
-                        <button className="btn btn-primary" onClick={this.handleEdit}>Edit</button>
+                            !this.state.editMode
+                            ?
+                            <button className="btn btn-primary" onClick={this.handleEdit}>Edit</button>
+                            :
+                            <button className="btn btn-primary" onClick={this.handleSave}>Save</button>
                         :
-                        <button className="btn btn-primary" onClick={this.handleSave}>Save</button>
+                        //if user is not an owner dont render edit/save btns
+                        <React.Fragment/> 
                         }
-                        
                     </React.Fragment>
                     :
                     <LoadingLogo />}

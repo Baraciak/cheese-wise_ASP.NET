@@ -82,4 +82,5 @@ function logout() {
     sessionStorage.removeItem('token');
     //redux
     store.dispatch(userStore.reset());
+    store.dispatch(userStore.addCompanyBool(false));
 }

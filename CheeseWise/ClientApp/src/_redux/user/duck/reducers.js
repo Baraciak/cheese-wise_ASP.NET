@@ -12,9 +12,9 @@ const userReducer = (state=INITIAL_STATE, action) =>{
             return {...state, currentUser: action.item}
         case types.RESET_USER:
             return {...state, currentUser: null}
+
         case types.ADD_COMPANY_BOOL:
             return {...state, hasCompany: action.bool}
-
         default:
             return state;
     }
