@@ -1,20 +1,25 @@
 import history from '../_helpers/history';
 import store from '../_redux/store';
-import {userActions} from '../_redux/user/duck';
+import {userActions as userStore} from '../_redux/user/duck';
 
 
 export const authenticationService = {
     login,
     logout,
     loginByToken,
-    getCurrentUser
+    getCurrentUser,
+    hasCompany
 };
 
 function getCurrentUser(){
-    return store.getState().currentUser
+    return store.getState().currentUser;
 }
 
-function login(accountData) {
+function hasCompany(){
+    return store.getState().hasCompany;
+}
+
+async function login(accountData) {
     const requestOptions = 
     {
         method: 'post',
@@ -25,7 +30,7 @@ function login(accountData) {
             },
         body: JSON.stringify(accountData)
     };
-
+    //probably haszpasłord
     return fetch(`https://localhost:44356/api/auth/login`, requestOptions)
         .then(res => res.json())
         .then(resJson => {
@@ -33,9 +38,9 @@ function login(accountData) {
                 console.log(resJson, "I'am in authService");
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 sessionStorage.setItem('token', resJson.token);
-                sessionStorage.setItem('currentUser', JSON.stringify(resJson.owner));
                 //redux
-                store.dispatch(userActions.add(resJson.owner));
+                store.dispatch(userStore.add(resJson.owner));
+                store.dispatch(userStore.addCompanyBool(resJson.hasCompany));
             }
         })
         .then(setTimeout(function(){
@@ -61,9 +66,9 @@ async function loginByToken(){
         .then(resJson => {
             //set refreshed token
             sessionStorage.setItem("token", resJson.token);
-            sessionStorage.setItem("currentUser", resJson.user);
             //redux
-            store.dispatch(userActions.add(resJson.user));
+            store.dispatch(userStore.add(resJson.user));
+            store.dispatch(userStore.addCompanyBool(resJson.hasCompany));
         })
         .catch(error => console.log(error))
     }else{
@@ -75,7 +80,6 @@ async function loginByToken(){
 function logout() {
     // remove user from local storage to log user out
     sessionStorage.removeItem('token');
-    sessionStorage.removeItem('currentUser');
     //redux
-    store.dispatch(userActions.reset());
+    store.dispatch(userStore.reset());
 }

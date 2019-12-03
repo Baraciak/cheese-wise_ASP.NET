@@ -1,8 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import { authenticationService } from '../../_services/authService';
+import { Dropdown } from '../layout/Dropdown';
 
 const Navbar = (props) => {
-    const {currentUser} = props;
+    const currentUser = authenticationService.getCurrentUser();
     return ( 
         <React.Fragment>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -14,7 +16,7 @@ const Navbar = (props) => {
                             </nav>
                         </li>
                     </ul>
-                    {currentUser == null ? 
+                    {currentUser === null ? 
                         <React.Fragment>
                             <nav className="navbar navbar-dark bg-dark">
                                 <Link className="navbar-brand" to="/account/register"><small>Register</small></Link>
@@ -25,12 +27,13 @@ const Navbar = (props) => {
                         </React.Fragment>
                         :
                         <React.Fragment>
-                            <nav className="navbar navbar-dark bg-dark">
-                    <Link className="navbar-brand" to="/account/overview"><small>Logged as {currentUser.name}</small></Link>
-                            </nav>
-                            <nav className="navbar navbar-dark bg-dark">
+                            {/* <nav className="navbar navbar-dark bg-dark"> */}
+                                <Dropdown onLogout={props.onLogout} currentUser={currentUser}/>
+                            {/* </nav> */}
+                            
+                            {/* <nav className="navbar navbar-dark bg-dark">
                                 <Link onClick={props.onLogout} className="navbar-brand" to="/"><small>Logout</small></Link>
-                            </nav>
+                            </nav> */}
                         </React.Fragment>
                     }
 

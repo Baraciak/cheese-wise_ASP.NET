@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Company from './Company';
-import { connect } from 'react-redux';
 import LoadingLogo from '../_components/common/loadingLogo';
+import { authenticationService } from '../_services/authService';
 
 class AccountOverview extends Component {
     state={
@@ -9,7 +9,9 @@ class AccountOverview extends Component {
         isCompanyLoaded: false
     }
     componentDidMount(){
-        this.fetchCompany(this.props.userId);
+        //authenticationService.getCurrentUser().id is same
+        //as connect(mapStateToProps, {})??????
+        this.fetchCompany(authenticationService.getCurrentUser().id);
     }
 
     render() {
@@ -42,8 +44,5 @@ class AccountOverview extends Component {
     }
 
 };
-const mapStateToProps = state => ({
-	userId: state.currentUser.id
-});
  
-export default connect(mapStateToProps, {}) (AccountOverview);
+export default AccountOverview;

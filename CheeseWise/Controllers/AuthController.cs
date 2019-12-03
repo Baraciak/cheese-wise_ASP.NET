@@ -29,6 +29,7 @@ namespace CheeseWise.Controllers
         [HttpPost("login")]
         public ActionResult<AuthData> Login([FromBody] LoginViewModel model)
         {
+            var hasCompany = false;
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var account = _context.Accounts
@@ -44,9 +45,15 @@ namespace CheeseWise.Controllers
                 return NotFound(new { message = "Email or Password is Wrong" });
             }
 
+            var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == account.Owner.Id);
+            if (userCompany != null)
+            {
+                hasCompany = true;
+            }
+
             var token = _authService.GetToken(account.Owner.Id);
 
-            return Ok(new { token, account.Owner });
+            return Ok(new { token, account.Owner, hasCompany });
         }
 
 
@@ -85,10 +92,19 @@ namespace CheeseWise.Controllers
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public ActionResult<bool> GetUserByToken([FromBody] AuthData data)
         {
+            var hasCompany = false;
+
             if (data.Token == null) return BadRequest(new { error = true, token = "no token specified" });
 
             var userId = _authService.DecodeToken(data.Token);
             var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId).Result;
+
+            var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == userId);
+            if (userCompany != null)
+            {
+                hasCompany = true;
+            }
+
 
             if (user == null)
             {
@@ -98,7 +114,7 @@ namespace CheeseWise.Controllers
             //pass refreshed token
             var newToken = _authService.GetToken(userId);
 
-            return Ok(new {error = false, token = newToken, user});
+            return Ok(new {error = false, token = newToken, user, hasCompany});
         }
     }
 }

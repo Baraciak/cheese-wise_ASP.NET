@@ -1,7 +1,9 @@
 const ADD_USER = "ADD_USER";
 const RESET_USER = "RESET_USER";
+const ADD_COMPANY_BOOL = "ADD_COMPANY_BOOL";
 
 export default {
     ADD_USER,
-    RESET_USER
+    RESET_USER,
+    ADD_COMPANY_BOOL
 }

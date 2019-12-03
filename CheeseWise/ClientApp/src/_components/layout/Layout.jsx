@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-// import { Container } from 'reactstrap';
-import BackBtn from './common/backBtn';
-import Footer from './common/footer';
-import UpBtn from './common/upBtn';
-import Navbar from './common/navbar';
+import BackBtn from '../common/backBtn';
+import Footer from '../common/footer';
+import UpBtn from '../common/upBtn';
+import Navbar from '../common/navbar';
 
 export class Layout extends Component {
   static displayName = Layout.name;
@@ -12,7 +11,7 @@ export class Layout extends Component {
 
     return (
       <React.Fragment>
-        <Navbar onLogout={this.props.onLogout} currentUser={this.props.currentUser}/>
+        <Navbar onLogout={this.props.onLogout}/>
           <div id="site-wrapper">
             <BackBtn />
             <div className="container">
