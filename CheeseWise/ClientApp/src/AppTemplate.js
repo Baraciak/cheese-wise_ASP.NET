@@ -17,10 +17,11 @@ import {authenticationService} from "./_services/authService"
 
 import history from './_helpers/history';
 import './static/css/appTemplate.css';
+import CreateCompany from './Views/CreateCompany';
 
 class AppTemplate extends Component {
     //runs at page refresh
-  	componentDidMount() {
+  	componentWillMount() {
 		authenticationService.loginByToken();
   	}
 
@@ -43,11 +44,14 @@ class AppTemplate extends Component {
 							<Route path={"/company/:companyId"} exact 
 								render={props => <Company companyId={props.match.params.companyId}/>}/>
 
+							<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
+							<ProtectedRoute  path="/action/show-company" exact component={AccountOverview} />
+
 							<Route path={"/account/register"} exact component={Register} />
 
 							<Route path={"/account/login"} exact component={Login}/>
 
-							<ProtectedRoute  path="/account/overview" exact component={AccountOverview} />
+							<Route path={"/account/overview"} exact component={AccountOverview}/>
 						</App>
          			</Switch>
 

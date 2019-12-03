@@ -73,7 +73,7 @@ namespace CheeseWise.Controllers
                 .Where(b => b.Owner.Id == id)
                 .FirstOrDefaultAsync();
 
-            return company;
+            return Ok(new { company, error = false });
         }
 
         // PUT: api/Companies/5

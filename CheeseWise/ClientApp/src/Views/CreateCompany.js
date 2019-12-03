@@ -1,29 +1,34 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import Company from './Company';
 
 class CreateCompany extends Component{
+    state = {
+        company:
+        {
+            category: {name: "Add Category"},
+            description: "Add your company description",
+            email: "cleaning1@gmail.com",
+            id: null,
+            location: "Add company location",
+            name: "Add company name",
+            owner: this.props.currentUser,
+            phone: "Add company phone number",
+            rating: 0.0
+        }
+    }
     render(){
         return(
-            <div>
-                <form>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput">Example label</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Another label</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder"/>
-                    </div>
-                </form>
-            </div>
+            <React.Fragment>
+                <Company createMode={true} company={this.state.company}/>
+            </React.Fragment>
         );
     }
-//             this.Name = name;
-// this.Email= email;
-// this.Phone = phone;
-// this.Description = description;
-// this.Rating = rating;
-// this.Location = location;
-// this.Owner = owner;
-// this.Category = category;
-
 }
+
+const mapStateToProps = (state) =>({
+    currentUser: state.currentUser,
+    hasCompany: state.hasCompany
+});
+
+export default connect(mapStateToProps, {})(CreateCompany);

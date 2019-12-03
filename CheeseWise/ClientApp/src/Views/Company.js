@@ -16,9 +16,21 @@ export default class Company extends Component {
         editMode: false
     }
 
+    constructor(props){
+        super(props);
+        if(this.props.createMode){
+            this.state = {
+                company: this.props.company,
+                services:[],
+                isCompanyLoaded: true,
+                isServicesLoaded: true,
+                editMode: true,
+            };
+        }
+    }
+
     handleEdit = () =>{
         this.setState({editMode: true});
-        
     }
 
     handleSave = () =>{
@@ -28,7 +40,6 @@ export default class Company extends Component {
 
     render() { 
         const isStateLoaded = this.state.isCompanyLoaded && this.state.isServicesLoaded; 
-
         return ( 
                 <React.Fragment>
                     {isStateLoaded
@@ -39,7 +50,7 @@ export default class Company extends Component {
                         <br />
                         <ServicesTable services={this.state.services}/>
                         {/* if curr user is owner of this company render edit/save btns*/}
-                        {history.location.pathname === "/account/overview"
+                        {history.location.pathname === "/action/create-company" || history.location.pathname === "/action/show-company"
                         ?
                             !this.state.editMode
                             ?
@@ -59,9 +70,10 @@ export default class Company extends Component {
     }
 
     componentDidMount = () =>{
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        this.fetchCompany(this.props.companyId);
-        this.fetchServices(this.props.companyId);
+        if(!this.props.createMode){
+            this.fetchCompany(this.props.companyId);
+            this.fetchServices(this.props.companyId);
+        }
     }
 
     fetchCompany = companyId =>{

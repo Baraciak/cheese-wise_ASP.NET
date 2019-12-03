@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
 import '../../static/css/dropdown_user_menu.css';
-import { authenticationService } from '../../_services/authService';
+import { connect } from 'react-redux';
 
 
-export class Dropdown extends Component {
+class Dropdown extends Component {
 
     render(){
         return(
@@ -21,16 +21,16 @@ export class Dropdown extends Component {
                             <hr/>
                         </div>
 
-                        {authenticationService.hasCompany()
+                        {this.props.hasCompany
                         ?
                         <div className="col">
-                            <Link className="link navbar-brand" to="/account/overview">
+                            <Link className="link navbar-brand" to="/action/show-company">
                                 <small>Show my company</small>
                             </Link>
                         </div>
                         :
                         <div className="col">
-                            <Link className="link navbar-brand" to="/account/overview">
+                            <Link className="link navbar-brand" to="/action/create-company">
                                 <small>Create company</small>
                             </Link>
                         </div>
@@ -47,3 +47,9 @@ export class Dropdown extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) =>({
+    hasCompany: state.hasCompany
+})
+
+export default connect(mapStateToProps, {})(Dropdown);

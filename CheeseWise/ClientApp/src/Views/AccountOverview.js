@@ -8,9 +8,8 @@ class AccountOverview extends Component {
         companyId: null,
         isCompanyLoaded: false
     }
+
     componentDidMount(){
-        //authenticationService.getCurrentUser().id is same
-        //as connect(mapStateToProps, {})??????
         this.fetchCompany(authenticationService.getCurrentUser().id);
     }
 
@@ -28,8 +27,8 @@ class AccountOverview extends Component {
         );
     }
 
-    async fetchCompany(userId){
-        return fetch(`https://localhost:44356/api/Companies/User/${userId}`, 
+    fetchCompany = (userId) => {
+        fetch(`https://localhost:44356/api/Companies/User/${userId}`, 
         {
             method: 'GET',
             headers: { 'Accept': 'application/json' }
@@ -37,12 +36,11 @@ class AccountOverview extends Component {
         .then(res => res.json())
         .then(resJson => this.setState(
             {
-                companyId: resJson.id,
+                companyId: resJson.company.id,
                 isCompanyLoaded: true
             }))
         .catch(err => console.log(err));
     }
-
-};
+}
  
 export default AccountOverview;

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import { authenticationService } from '../../_services/authService';
-import { Dropdown } from '../layout/Dropdown';
+import Dropdown from '../layout/Dropdown';
 
 const Navbar = (props) => {
     const currentUser = authenticationService.getCurrentUser();
