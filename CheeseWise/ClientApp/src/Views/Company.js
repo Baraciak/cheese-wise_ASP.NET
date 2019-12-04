@@ -46,11 +46,12 @@ export default class Company extends Component {
                     ?
                     <React.Fragment>
                         <CompanyInfo editMode={this.state.editMode} company={this.state.company}/>
-                        <TextBox description={this.state.company.description}/>   
+                        <TextBox editMode={this.state.editMode} description={this.state.company.description}/>   
                         <br />
-                        <ServicesTable services={this.state.services}/>
+                        <ServicesTable editMode={this.state.editMode} services={this.state.services}/>
                         {/* if curr user is owner of this company render edit/save btns*/}
-                        {history.location.pathname === "/action/create-company" || history.location.pathname === "/action/show-company"
+                        {history.location.pathname === "/action/create-company" 
+                        || history.location.pathname === "/action/show-company"
                         ?
                             !this.state.editMode
                             ?
