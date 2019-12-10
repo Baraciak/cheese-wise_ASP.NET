@@ -29,8 +29,9 @@ namespace CheeseWise.DB
 
         private void AddSampleData()
         {
-            Categories.AddRange(SampleData.Categories);
             Users.AddRange(SampleData.Users);
+            Accounts.AddRange(SampleData.Accounts);
+            Categories.AddRange(SampleData.Categories);
             Companies.AddRange(SampleData.Companies);
             Services.AddRange(SampleData.Services);
         }

@@ -16,10 +16,10 @@ class CompaniesTable extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.companies.map(company =>
+                    {this.props.companies.map((company, index) =>
                     
                         <tr key={company.id}>
-                                <th scope="row">{company.id}</th>
+                                <th scope="row">{index + 1}</th>
                                 <td>
                                     <Link to={"/company/" + company.id}>
                                         {company.name}

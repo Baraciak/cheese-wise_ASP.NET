@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Company from './Company';
 import LoadingLogo from '../_components/common/loadingLogo';
-import { authenticationService } from '../_services/authService';
+import { connect } from 'react-redux';
 
 class AccountOverview extends Component {
     state={
@@ -10,10 +10,12 @@ class AccountOverview extends Component {
     }
 
     componentDidMount(){
-        this.fetchCompany(authenticationService.getCurrentUser().id);
+        this.fetchCompany();
     }
 
     render() {
+        console.log(this.props.currentUser, "chuj");
+        
         return ( 
             <React.Fragment>
                 {this.state.isCompanyLoaded
@@ -27,8 +29,9 @@ class AccountOverview extends Component {
         );
     }
 
-    fetchCompany = (userId) => {
-        fetch(`https://localhost:44356/api/Companies/User/${userId}`, 
+    //get company by user id
+    fetchCompany = () => {
+        fetch(`https://localhost:44356/api/Companies/User/${this.props.currentUser.id}`, 
         {
             method: 'GET',
             headers: { 'Accept': 'application/json' }
@@ -42,5 +45,8 @@ class AccountOverview extends Component {
         .catch(err => console.log(err));
     }
 }
- 
-export default AccountOverview;
+const mapStateToProps = (state) =>({
+    currentUser: state.currentUser
+})  
+
+export default connect(mapStateToProps, {})(AccountOverview);

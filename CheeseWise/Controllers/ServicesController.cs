@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
+using CheeseWise.Models.View;
 
 namespace CheeseWise.Controllers
 {
@@ -91,12 +92,18 @@ namespace CheeseWise.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Service>> PostService(Service service)
+        public async Task<ActionResult<Service>> PostService(AddServicesViewModel model)
         {
-            _context.Services.Add(service);
+            List<Service> services = model.Services;
+
+            foreach (var service in services)
+            {
+                _context.Services.Add(service);
+            }
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetService", new { id = service.Id }, service);
+            return Ok();
         }
 
         // DELETE: api/Services/5

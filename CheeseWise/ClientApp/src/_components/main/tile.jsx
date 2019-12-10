@@ -1,13 +1,14 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 const Tile = (props) => {
     return (
-        <div className="card mt-5">
-            <img className="card-img-top" src={props.category.imageSource} alt={props.category.name} />
+        <Link to={"/category/" + props.category.id}>
+            <img className="card card-img-top" src={"data:image/png;base64," + props.category.imageSource} alt={props.category.name} />
                 <p className="card-text">
                     {props.category.name.toUpperCase()}
                 </p>
-        </div>
+        </Link>
       );
 }
  

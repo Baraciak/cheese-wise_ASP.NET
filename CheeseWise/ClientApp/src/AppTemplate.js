@@ -22,7 +22,9 @@ import CreateCompany from './Views/CreateCompany';
 class AppTemplate extends Component {
     //runs at page refresh
   	componentWillMount() {
-		authenticationService.loginByToken();
+		if(sessionStorage.token !== undefined){
+			authenticationService.loginByToken();
+		}
   	}
 
   	handleLogout() {
@@ -44,14 +46,14 @@ class AppTemplate extends Component {
 							<Route path={"/company/:companyId"} exact 
 								render={props => <Company companyId={props.match.params.companyId}/>}/>
 
-							<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
-							<ProtectedRoute  path="/action/show-company" exact component={AccountOverview} />
+							{this.props.hasCompany
+							?<ProtectedRoute  path="/action/show-company" exact component={AccountOverview} />
+							:<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
+							}
 
 							<Route path={"/account/register"} exact component={Register} />
 
 							<Route path={"/account/login"} exact component={Login}/>
-
-							<Route path={"/account/overview"} exact component={AccountOverview}/>
 						</App>
          			</Switch>
 
@@ -62,7 +64,8 @@ class AppTemplate extends Component {
 }
 
 const mapStateToProps = state => ({
-	currentUser: state.currentUser
+	currentUser: state.currentUser,
+	hasCompany: state.hasCompany
 });
  
 export default connect(mapStateToProps, {})(AppTemplate);

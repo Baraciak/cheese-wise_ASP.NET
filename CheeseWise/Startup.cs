@@ -44,9 +44,9 @@ namespace CheeseWise
             services.AddDbContext<CheeseWiseDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DbConnString")));
 
-            //            here add sample data
-            //            var context = new CheeseWiseDbContext();
-            //            context.SaveChanges();
+            //here add sample data
+//            var context = new CheeseWiseDbContext();
+//            context.SaveChanges();
 
             
             var symmetricSecurityKey =
@@ -57,7 +57,16 @@ namespace CheeseWise
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
-//                ValidateLifetime = true,
+                ValidateLifetime = true,
+                LifetimeValidator = (before, expires, token, parameters) =>
+                {
+                    //If expiration has a date, add 2 days to it
+                    if (expires.HasValue)
+                        return expires.Value.AddHours(1) > DateTime.Now;
+                    
+                    return false;
+                    
+                },
                 ValidAudience = Configuration["Jwt:Site"],
                 ValidIssuer = Configuration["Jwt:Site"],
                 IssuerSigningKey = symmetricSecurityKey,

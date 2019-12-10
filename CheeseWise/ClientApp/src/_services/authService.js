@@ -1,6 +1,8 @@
 import history from '../_helpers/history';
 import store from '../_redux/store';
 import {userActions as userStore} from '../_redux/user/duck';
+import jwt_decode from 'jwt-decode';
+import { handleResponse } from '../_helpers/handleResponse';
 
 
 export const authenticationService = {
@@ -22,7 +24,7 @@ function hasCompany(){
 async function login(accountData) {
     const requestOptions = 
     {
-        method: 'post',
+        method: 'POST',
         headers: 
             {
                 'Accept': 'application/json',
@@ -30,9 +32,8 @@ async function login(accountData) {
             },
         body: JSON.stringify(accountData)
     };
-    //probably haszpasłord
     return fetch(`https://localhost:44356/api/auth/login`, requestOptions)
-        .then(res => res.json())
+        .then(res => handleResponse(res))
         .then(resJson => {
             if(resJson.token !== undefined){
                 console.log(resJson, "I'am in authService");
@@ -47,40 +48,26 @@ async function login(accountData) {
             history.push('/')}, 500))
         .catch(error => console.log(error));
 }
-
-async function loginByToken(){
-    if(sessionStorage.token !== undefined){
-        const authData = {'Token': sessionStorage.token};
-
-        return fetch("https://localhost:44356/api/auth/validate-token", 
-        {
-            method: 'post',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ sessionStorage.token
-            },
-            body: JSON.stringify(authData)
-        })
-        .then(res => res.json())
-        .then(resJson => {
-            //set refreshed token
-            sessionStorage.setItem("token", resJson.token);
-            //redux
-            store.dispatch(userStore.add(resJson.user));
-            store.dispatch(userStore.addCompanyBool(resJson.hasCompany));
-        })
-        .catch(error => console.log(error))
-    }else{
-        return {message: 'No token provided'}
-    }
-}
     
-
 function logout() {
     // remove user from local storage to log user out
     sessionStorage.removeItem('token');
     //redux
     store.dispatch(userStore.reset());
     store.dispatch(userStore.addCompanyBool(false));
+}
+
+
+async function loginByToken(){
+    const token = sessionStorage.token;
+
+    const decodedData = jwt_decode(token);
+    const user = {
+        id: decodedData.Id,
+        name: decodedData.Name,
+        email: decodedData.Email
+    };
+    store.dispatch(userStore.add(user));
+    store.dispatch(userStore.addCompanyBool(decodedData.hasCompany));
+    console.log('loggedIn');
 }

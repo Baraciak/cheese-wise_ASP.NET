@@ -14,7 +14,7 @@ class Login extends Component {
                     <label htmlFor="password">Password</label>
                     <input name="password" type="password" className="form-control" id="password" placeholder="Enter Password" />
                 </div>
-                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="submit" className="btn btn-secondary">Login</button>
             </form>
         );
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CheeseWise.Models;
 using CheeseWise.Models.View;
 
 namespace CheeseWise.Services.Abstraction
@@ -10,7 +11,7 @@ namespace CheeseWise.Services.Abstraction
     {
         string HashPassword(string password);
         bool VerifyPassword(string actualPassword, string hashedPassword);
-        string GetToken(int id);
+        string GetToken(User user, bool hasCompany);
         int DecodeToken(string token);
     }
 }

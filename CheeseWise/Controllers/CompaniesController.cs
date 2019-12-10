@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
+using CheeseWise.Models.View;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CheeseWise.Controllers
 {
@@ -80,6 +83,7 @@ namespace CheeseWise.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
+        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutCompany(int id, Company company)
         {
             if (id != company.Id)
@@ -99,21 +103,23 @@ namespace CheeseWise.Controllers
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
-            return NoContent();
+            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, company);
         }
 
         // POST: api/Companies
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
+        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Company>> PostCompany(Company company)
         {
+            company.Owner = await _context.Users.FirstOrDefaultAsync(u => u.Id == company.Owner.Id);
+            company.Category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == company.Category.Id);
+            
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
@@ -122,6 +128,7 @@ namespace CheeseWise.Controllers
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
+        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Company>> DeleteCompany(int id)
         {
             var company = await _context.Companies.FindAsync(id);

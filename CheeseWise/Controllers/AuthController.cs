@@ -44,16 +44,13 @@ namespace CheeseWise.Controllers
                 return NotFound(new { message = "Email or Password is Wrong" });
             }
 
-            var token = _authService.GetToken(account.Owner.Id);
-
             //if user is company owner 
             var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == account.Owner.Id).Result;
-            if (userCompany != null)
-            {
-                return Ok(new { token, account.Owner, hasCompany = true });
-            }
+            var hasCompany = userCompany != null;
 
-            return Ok(new { token, account.Owner, hasCompany = false });
+            var token = _authService.GetToken(account.Owner, hasCompany);
+
+            return Ok(new { token, account.Owner, hasCompany });
         }
 
 
@@ -88,31 +85,31 @@ namespace CheeseWise.Controllers
         }
 
 
-        [HttpPost("validate-token")]
+//        [HttpPost("validate-token")]
+//        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
+//        public ActionResult<bool> GetUserByToken([FromBody] AuthData data)
+//        {
+//            if (data.Token == null) return BadRequest(new { error = true, token = "no token specified" });
+//
+//            var userId = _authService.DecodeToken(data.Token);
+//            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId).Result;
+//            if (user == null)
+//            {
+//                Unauthorized(new { error = true, token = "no token specified" });
+//            }
+//
+//            var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == userId).Result;
+//            var hasCompany = userCompany != null;
+//
+//            var newToken = _authService.GetToken(user, hasCompany);
+//            return Ok(new {error = false, token = newToken, user, hasCompany});
+//        }
+
+        [HttpGet("validate-token")]
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult<bool> GetUserByToken([FromBody] AuthData data)
+        public ActionResult<bool> ValidateToken()
         {
-            if (data.Token == null) return BadRequest(new { error = true, token = "no token specified" });
-
-            var userId = _authService.DecodeToken(data.Token);
-            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId).Result;
-
-            if (user == null)
-            {
-                Unauthorized(new { error = true, token = "no token specified" });
-            }
-
-            //pass refreshed token
-            var newToken = _authService.GetToken(userId);
-
-
-            var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == userId).Result;
-            if (userCompany != null)
-            {
-                return Ok(new {error = false, token = newToken, user, hasCompany = true});
-            }
-
-            return Ok(new {error = false, token = newToken, user, hasCompany = false});
+            return Ok(new { error = false, authorized = true });
         }
     }
 }

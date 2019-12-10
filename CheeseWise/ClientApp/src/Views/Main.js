@@ -4,8 +4,7 @@ import Tiles from '../_components/main/tiles';
 import SearchBar from '../_components/main/searchBar'
 import LoadingLogo from '../_components/common/loadingLogo';
 
-import '../static/css/main.css'
-
+import '../static/css/main.css';
 class App extends Component {
     state = { 
         categories: []
@@ -30,12 +29,12 @@ class App extends Component {
           <br />
           <SearchBar onSearch={this.handleSearch}/>
           <br/>
-          <div className="container">
-            {this.state.categories.length > 0 
-            ?
-            <Tiles categories={this.state.categories}/>
-            :
-            <LoadingLogo />}
+            <div className="container">
+              {this.state.categories.length > 0 
+              ?
+              <Tiles categories={this.state.categories}/>
+              :
+              <LoadingLogo />}
           </div>
         </React.Fragment>
      );

@@ -7,6 +7,7 @@ using CheeseWise.Services.Abstraction;
 using CryptoHelper;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using CheeseWise.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -29,7 +30,7 @@ namespace CheeseWise.Services
             this._tokenValidationParameters = tokenValidationParameters;
         }
 
-        public string GetToken(int id)
+        public string GetToken(User user, bool hasCompany)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -37,7 +38,10 @@ namespace CheeseWise.Services
 
             var claims = new List<Claim>
             {
-                new Claim("Id", Convert.ToString(id))
+                new Claim("Id", Convert.ToString(user.Id)),
+                new Claim("Name", Convert.ToString(user.Name)),
+                new Claim("Email", Convert.ToString(user.Email)),
+                new Claim("hasCompany", Convert.ToString(hasCompany))
             };
 
             var token = new JwtSecurityToken(
@@ -67,11 +71,8 @@ namespace CheeseWise.Services
         {
             var handler = new JwtSecurityTokenHandler();
             var decodedToken = handler.ReadJwtToken(jwtToken);
-//             SecurityToken secToken;
-//            handler.ValidateToken(jwtToken, _tokenValidationParameters, validatedToken: out secToken);
             //get userId stored in token
             int userId = Convert.ToInt32(decodedToken.Claims.ToList()[0].Value);
-//            int userId = 35;
 
             return userId;
         }

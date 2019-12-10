@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
-import '../../static/css/dropdown_user_menu.css';
 import { connect } from 'react-redux';
 
+import '../../static/css/dropdown_user_menu.css';
 
 class Dropdown extends Component {
 
@@ -12,35 +12,33 @@ class Dropdown extends Component {
                 <button className="dropdown-toggle btn btn-outline-warning" data-toggle="dropdown" id="dropdownMenuButton" 
                 aria-haspopup="true" aria-expanded="false">|||</button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <div className="row row-cols-1 container">
-                        <div className="col">
-                            <span className="navbar-brand"><small> Hello {this.props.currentUser.name}</small></span>
-                        </div>
+                    <div className="col">
+                        <span className="navbar-brand"><small> Hello {this.props.currentUser.name}</small></span>
+                    </div>
 
-                        <div className="col">
-                            <hr/>
-                        </div>
+                    <div className="col">
+                        <hr/>
+                    </div>
 
-                        {this.props.hasCompany
-                        ?
-                        <div className="col">
-                            <Link className="link navbar-brand" to="/action/show-company">
-                                <small>Show my company</small>
-                            </Link>
-                        </div>
-                        :
-                        <div className="col">
-                            <Link className="link navbar-brand" to="/action/create-company">
-                                <small>Create company</small>
-                            </Link>
-                        </div>
-                        }
+                    {this.props.hasCompany
+                    ?
+                    <div className="col">
+                        <Link className="link navbar-brand" to="/action/show-company">
+                            <small>Show my company</small>
+                        </Link>
+                    </div>
+                    :
+                    <div className="col">
+                        <Link className="link navbar-brand" to="/action/create-company">
+                            <small>Create company</small>
+                        </Link>
+                    </div>
+                    }
 
-                        <div className="col">
-                            <Link className="link navbar-brand " onClick={this.props.onLogout} to="/">
-                                <small>Logout</small>
-                            </Link>
-                        </div>
+                    <div className="col">
+                        <Link className="link navbar-brand " onClick={this.props.onLogout} to="/">
+                            <small>Logout</small>
+                        </Link>
                     </div>
                 </div>
             </div>

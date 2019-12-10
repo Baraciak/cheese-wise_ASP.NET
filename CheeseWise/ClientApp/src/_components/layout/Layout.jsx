@@ -14,7 +14,7 @@ export class Layout extends Component {
         <Navbar onLogout={this.props.onLogout}/>
           <div id="site-wrapper">
             <BackBtn />
-            <div className="container">
+            <div id="content-wrapper" className="container">
 
               {this.props.children}
 
