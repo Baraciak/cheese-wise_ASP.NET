@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
 using CheeseWise.Models.View;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CheeseWise.Controllers
 {
@@ -92,18 +94,16 @@ namespace CheeseWise.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Service>> PostService(AddServicesViewModel model)
+        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<Service>> PostService(Service service)
         {
-            List<Service> services = model.Services;
+            service.Company = _context.Companies.FirstOrDefault(c => c.Id == service.Company.Id);
 
-            foreach (var service in services)
-            {
-                _context.Services.Add(service);
-            }
+            _context.Services.Add(service);
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new {service});
         }
 
         // DELETE: api/Services/5
@@ -119,7 +119,7 @@ namespace CheeseWise.Controllers
             _context.Services.Remove(service);
             await _context.SaveChangesAsync();
 
-            return service;
+            return Ok(new { error = false });
         }
 
         private bool ServiceExists(int id)

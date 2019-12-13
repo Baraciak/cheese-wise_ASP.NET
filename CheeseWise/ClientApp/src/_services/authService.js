@@ -36,7 +36,7 @@ async function login(accountData) {
         .then(res => handleResponse(res))
         .then(resJson => {
             if(resJson.token !== undefined){
-                console.log(resJson, "I'am in authService");
+                // console.log(resJson, "I'am in authService");
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 sessionStorage.setItem('token', resJson.token);
                 //redux
@@ -69,5 +69,5 @@ async function loginByToken(){
     };
     store.dispatch(userStore.add(user));
     store.dispatch(userStore.addCompanyBool(decodedData.hasCompany));
-    console.log('loggedIn');
+    // console.log('loggedIn');
 }

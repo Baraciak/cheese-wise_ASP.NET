@@ -1,14 +1,14 @@
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
  
 export default class CompanyInfo extends Component{
     constructor(props){
         super(props);
-    }
-
-    state = {
-        categories: [],
-        isStateLoaded: false,
-        isSaved: false
+        this.state = {
+            categories: [],
+            isStateLoaded: false,
+            isSaved: false,
+            selectTagValue: this.props.company.category.name
+        }
     }
 
     componentDidMount(){
@@ -19,8 +19,14 @@ export default class CompanyInfo extends Component{
         this.setState({isSaved: false});
     }
 
-    //
+    handleSelectChange = (event) =>{
+        event.preventDefault();
+        this.triggerNotSaved();
+        this.setState({selectTagValue: event.target.value});
+    }
+
     save = (event) =>{
+        event.preventDefault();
         this.setState({isSaved: true});
         this.props.onSaveCompanyInfo(event);
     }
@@ -35,38 +41,35 @@ export default class CompanyInfo extends Component{
                     <img className="m-2" src="https://png.pngtree.com/element_pic/00/16/07/11578393f240f05.jpg" alt="You're company logo here!"/>
                     <div id="info" className="form-group row m-2 ">   
 
-                        <label htmlFor="name" className="col-sm-2 col-form-label">Name:</label>
+                        
                         <div className="col-sm-10">
-                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" id="name" name="name" placeholder={company.name}/>
+                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" name="name" defaultValue={company.name} />
                         </div>
 
-                        <label htmlFor="category" className="col-sm-2 col-form-label">Category: </label>
+                        {/* <label htmlFor="category" className="col-sm-2 col-form-label"><small>Category</small></label> */}
                         {editMode && isStateLoaded
                         ?
-                        <select onChange={this.triggerNotSaved} name="categoryId" className="col-sm-10">
-                            {categories.map(category => 
-                                <option key={category.id} value={category.id}>{category.name}</option>
+                        <select value={this.state.selectTagValue} onChange={this.handleSelectChange} id="category" name="category" className="col-sm-10">
+                            {categories.map((category, index) => 
+                                <option key={index} value={category.id}>{category.name}</option>
                             )}
                         </select>
                         :
                         <div className="col-sm-10">
-                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" id="category" name="category" placeholder={company.category.name} />        
+                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" name="category" defaultValue={company.category.name} />        
                         </div>
                         }
 
-                        <label htmlFor="location" className="col-sm-2 col-form-label">Location:</label>
                         <div className="col-sm-10">
-                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" id="location" name="location" placeholder={company.location} />
+                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" name="location" defaultValue={company.location} />
                         </div>
 
-                        <label htmlFor="phone" className="col-sm-2 col-form-label">Phone: </label>
                         <div className="col-sm-10">
-                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" id="phone" name="phone" placeholder={company.phone} />
+                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" name="phone" defaultValue={company.phone} />
                         </div>
 
-                        <label htmlFor="email" className="col-sm-2 col-form-label">Email:</label>
                         <div className="col-sm-10">
-                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" id="email" name="email" placeholder={company.email} />
+                            <input onChange={this.triggerNotSaved} type="email" readOnly={!editMode} className="form-control-plaintext" name="email" defaultValue={company.email} />
                         </div>
                     </div>
                     {editMode

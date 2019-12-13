@@ -91,7 +91,31 @@ namespace CheeseWise.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(company).State = EntityState.Modified;
+
+//            _context.Entry(company).State = EntityState.Modified;
+            var entityCompany = _context.Companies
+                                        .Include(c => c.Category)
+                                        .Include(c => c.Owner)
+                                        .FirstOrDefault(c => c.Id == id);
+
+            if (entityCompany == null)
+            {
+                return NotFound(new { text = "Company with this id not found" });
+            }
+
+            var category = _context.Categories.FirstOrDefault(c => c.Id == company.Category.Id);
+            if (category == null)
+            {
+                return NotFound(new {text = "Category with this id not found" });
+            }
+
+            entityCompany.Category = category;
+            entityCompany.Email = company.Email;
+            entityCompany.Phone = company.Phone;
+            entityCompany.Location = company.Location;
+            entityCompany.Description = company.Description;
+
+            _context.Companies.Update(entityCompany);
 
             try
             {
@@ -107,7 +131,7 @@ namespace CheeseWise.Controllers
                 throw;
             }
 
-            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, company);
+            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, entityCompany);
         }
 
         // POST: api/Companies

@@ -34,7 +34,6 @@ class Tiles extends Component{
         let categories = this.props.categories;
 
         const categoryHelperLastSize = categories % 4;
-        let counter = 0;
         for(let category of categories){
 
             if(resultHelper.length === 4){

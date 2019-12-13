@@ -14,7 +14,7 @@ class AccountOverview extends Component {
     }
 
     render() {
-        console.log(this.props.currentUser, "chuj");
+        // console.log(this.props.currentUser);
         
         return ( 
             <React.Fragment>

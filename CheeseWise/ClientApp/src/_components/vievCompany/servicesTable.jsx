@@ -1,10 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 
 const ServicesTable = ({onRemoveService, onAddService, services, editMode}) => {
-
-    // console.log(services, "LIST TABLE SEVICES")
-    const counter = 0;
     return ( 
         <form onSubmit={onAddService}>
             <table className="table">
@@ -25,11 +22,11 @@ const ServicesTable = ({onRemoveService, onAddService, services, editMode}) => {
 
                             {editMode
                             ?
-                            <th scope="row">
-                                <button type="button" onClick={() => onRemoveService(service.name)} className="btn btn-danger"><big>-</big></button>
-                            </th>
-                            :
-                            <th scope="row">{index + 1}</th>
+                                <th scope="row">
+                                    <button type="button" onClick={() => onRemoveService(service.id)} className="btn btn-danger"><big>-</big></button>
+                                </th>
+                                :
+                                <th scope="row">{index + 1}</th>
                             }
 
                             <td>

@@ -50,31 +50,14 @@ class Company extends Component {
 
     handleSave = () => {
         this.setState({editMode: false});
-        //fetch save data
+        //saveCompany() uses postCompany/putCompany
         this.saveCompany();
-        this.postServices();
-    }
-
-    saveCompany =() => {
-        if(this.props.createMode){
-            this.postCompany();
-            //push to show-company - exit create mode
-            setTimeout(() => {
-                history.push('/action/show-company')
-            }, 200);
-          
-        }else{
-            this.putCompany();
-        }
+        // this.postServices();
     }
 
     handleDelete = () => {
         this.toggleModal();
         this.deleteCompany();
-    }
-
-    toggleModal = () => {
-        this.setState({showModal: !this.state.showModal});
     }
 
     render() { 
@@ -124,65 +107,69 @@ class Company extends Component {
         );
     }
 
-    handleSaveCompanyInfo = (saveCompanyEvent) =>{
-        saveCompanyEvent.preventDefault();
+    toggleModal = () => {
+        this.setState({showModal: !this.state.showModal});
+    }
 
+    saveCompany = () => {
+        if(this.props.createMode){
+            this.postCompany();
+            //history.push to show-company -> exit create mode
+            setTimeout(() => {
+                history.push('/action/show-company')
+            }, 400);
+        }else{
+            this.putCompany();
+        }
+    }
+
+    handleSaveCompanyInfo = (saveCompanyEvent) =>{
         const data = new FormData(saveCompanyEvent.target);
-        const company = {
-            name: data.get("name"),
-            location: data.get("location"),
-            phone: data.get("phone"),
-            email: data.get("email"),
-            category: {id: parseInt(data.get("categoryId"))},
-            owner: {id: parseInt(this.props.currentUser.id)},
-            description: this.state.company.description
-        };
+        const company = this.state.company;
+        company.name = data.get("name");
+        company.phone = data.get("phone");
+        company.email = data.get("email");
+        company.owner = {id: parseInt(this.props.currentUser.id)};
+        company.category = {id: parseInt(data.get("category"))};
+        company.location = data.get("location");
+        company.description = this.state.company.description;
         this.setState({company});
-        console.log(company);
+        // console.log(company, 'compInfo');
     }
 
     handleSaveDescription = (event) =>{
-        event.preventDefault();
         const data = new FormData(event.target);
         const desc = data.get("description");
         let company = this.state.company;
         company.description = desc;
         this.setState({company});
+        // console.log(company, 'desc');
     }
 
-    handleAddService = (addServiceEvent) =>{
-        addServiceEvent.preventDefault();
+    handleAddService = (event) =>{
+        event.preventDefault();
 
-        const data = new FormData(addServiceEvent.target);
+        const data = new FormData(event.target);
         const service = {
-            name: data.get("name"),
-            description: data.get("description"),
-            price: data.get("price"),
-            priceCategory: data.get("priceCategory"),
-            company: this.state.company
+            'Name': data.get("name"),
+            'Description': data.get("description"),
+            'Price': parseInt(data.get("price")),
+            'PriceCategory': data.get("priceCategory"),
+            'Company': this.state.company
         };
-        this.setState({services: [...this.state.services, service]})
+
+        console.log(service, 'addService');
+        //da fuk dont fcking work, 
+        //everything fcking null on backend 
+        this.postService(service);
     }
 
-    handleRemoveService = (name) =>{
-        // fix here, deleted all services with same name,
-        //problem? cant creat unique id to delete by id
+    handleRemoveService = (id) =>{
+        //should return 
+        this.deleteService(id);
         let services = this.state.services;
-        services = services.filter(service => service.name !== name);
+        services = services.filter(service => service.id !== id);
         this.setState({services});
-        // console.log(name);
-        // let services = this.state.services;
-        // const serviceToDelete = services.find(service => service === service);
-        // const indexOfServiceToDelete = services.indexOf(serviceToDelete);
-        // console.log(indexOfServiceToDelete, 'index');
-        // for(let service of services){
-        //     if (service.name === name){
-        //         services[indexOfServiceToDelete] = null;
-        //     }
-        //     break;
-        // }
-        // console.log(services);
-        // this.setState({services})
     }
 
     deleteCompany = () => {
@@ -204,7 +191,10 @@ class Company extends Component {
     }
 
     putCompany = () => {
-        return fetch(`https://localhost:44356/api/companies/${this.props.companyId}`, 
+        const company = this.state.company;
+        console.log(company);
+
+        return fetch(`https://localhost:44356/api/companies/${company.id}`, 
         {
             method: 'PUT',
             headers: {
@@ -212,16 +202,17 @@ class Company extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+ sessionStorage.token
             },
-            body: JSON.stringify({company: this.state.company, id: this.props.companyId})
+            body: JSON.stringify(company)
         })
         .then(res => handleResponse(res))
         .then(resJsonCompany => {
-            console.log(resJsonCompany);
-            this.setState({company: resJsonCompany})
+            console.log(resJsonCompany, 'put');
+            this.setState({company: resJsonCompany});
             store.dispatch(userActions.addCompanyBool(true));
         })
         .catch(error => console.log(error))
     }
+
 
     postCompany = () => {
         return fetch("https://localhost:44356/api/companies", 
@@ -234,20 +225,17 @@ class Company extends Component {
             },
             body: JSON.stringify(this.state.company)
         })
-        .then(res => handleResponse(res))
+        .then(res => res.json())
         .then(resJsonCompany => {
-            this.setState({company: resJsonCompany})
+            console.log(resJsonCompany, 'post');
+            //here reJson has new company id
+            // this.setState({company: resJsonCompany});
             store.dispatch(userActions.addCompanyBool(true));
         })
         .catch(error => console.log(error))
     }
 
-    postServices = () => {
-        const companyId = this.state.company.id;
-        let services = [...this.state.services];
-        services.forEach(service => service.company.id = companyId);
-
-        console.log(services, ',y');
+    postService = (service) =>{
         return fetch("https://localhost:44356/api/services", 
         {
             method: 'POST',
@@ -256,10 +244,27 @@ class Company extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+ sessionStorage.token
             },
-            body: JSON.stringify({services})
+            body: JSON.stringify(service)
         })
         .then(res => handleResponse(res))
-        .then(resJson => console.log(resJson))
+        .then(resJson => {      
+            console.log(resJson, 'service json response'); 
+            this.setState({services: [...this.state.services, resJson.service]});
+        })
+        .catch(error => console.log(error))
+    }
+
+    deleteService = (serviceId) =>{
+        return fetch(`https://localhost:44356/api/services/${serviceId}`, 
+        {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ sessionStorage.token
+            }
+        })
+        .then(res => handleResponse(res))
         .catch(error => console.log(error))
     }
     
