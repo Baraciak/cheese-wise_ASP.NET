@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
-using CheeseWise.Models.View;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
@@ -51,9 +48,7 @@ namespace CheeseWise.Controllers
         public async Task<List<Service>> GetServicesByCompanyId(int id)
         {
             var company = await _context.Companies.FindAsync(id);
-            var services = await _context.Services
-                .Where(b => b.Company == company)
-                .ToListAsync();
+            var services = company.Services;
 
             return services;
         }
@@ -97,13 +92,13 @@ namespace CheeseWise.Controllers
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Service>> PostService(Service service)
         {
-            service.Company = _context.Companies.FirstOrDefault(c => c.Id == service.Company.Id);
-
-            _context.Services.Add(service);
-
+//            service.Company = _context.Companies.FirstOrDefault(c => c.Id == service.Company.Id);
+//
+//            _context.Services.Add(service);
+//
             await _context.SaveChangesAsync();
 
-            return Ok(new {service});
+            return Ok();
         }
 
         // DELETE: api/Services/5

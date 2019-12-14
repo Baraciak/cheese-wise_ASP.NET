@@ -3,15 +3,17 @@ using System;
 using CheeseWise.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CheeseWise.Migrations
 {
     [DbContext(typeof(CheeseWiseDbContext))]
-    partial class CheeseWiseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191214172126_CompanyAddServicesList")]
+    partial class CompanyAddServicesList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

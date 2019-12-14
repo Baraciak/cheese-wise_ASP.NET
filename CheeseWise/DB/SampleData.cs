@@ -35,18 +35,6 @@ namespace CheeseWise.DB
             
         };
 
-        //        public static List<Category> Categories = new List<Category>
-        //        {
-        //            new Category("House Cleaning", "https://img.icons8.com/cotton/80/000000/polish.png"),
-        //            new Category("Plumbing", "https://img.icons8.com/cotton/80/000000/plumbing--v2.png"),
-        //            new Category("Gardening", "https://img.icons8.com/cotton/64/000000/hand-planting--v1.png"),
-        //            new Category("Constructing", "https://img.icons8.com/cotton/64/000000/drill.png"),
-        //            new Category("Designing", "https://img.icons8.com/plasticine/100/000000/design--v2.png"),
-        //            new Category("Sewing", "https://img.icons8.com/cotton/64/000000/button--v2.png"),
-        //            new Category("IT Support", "https://img.icons8.com/cotton/64/000000/monitor.png"),
-        //            new Category("Security", "https://img.icons8.com/cotton/64/000000/wallmount-camera.png"),
-        //            new Category("Health", "https://img.icons8.com/cotton/64/000000/hand-with-a-pill.png")
-        //        };
         public static List<Category> Categories = new List<Category>
         {
             new Category("House Cleaning",
@@ -71,17 +59,40 @@ namespace CheeseWise.DB
 
         public static List<Company> Companies = new List<Company>
         {
-            new Company("Cleaning Company 1", "cleaning1@gmail.com", "420-420-420",
-                "Company 1 for testing purposes", 4.2f, "Berlin", Users[0], Categories[0]),
-            new Company("Cleaning Company 2", "cleaning2@gmail.com", "420-420-420",
-                "Company 2 for testing purposes", 4.5f, "Warsaw", Users[1], Categories[0])
+            new Company
+            {
+                Services = new List<Service>
+                {
+                    new Service("HouseCleaning", "Cleaning house for money bitch", 420, "day"),
+                    new Service("HouseCleaning 2", "Cleaning house for money bitch", 69, "hour")
+                },
+                Name = "Cleaning Company 1",
+                Email = "cleaning1@gmail.com",
+                Description = "Company 1 for testing purposes",
+                Rating = 4.2f,
+                Phone = "420-420-420",
+                Location = "Berlin",
+                Owner = Users[0],
+                Category = Categories[0],
+                Website = "www.cleaning1.com"
+            },
+            new Company
+            {
+                Services = new List<Service>
+                {
+                    new Service("HouseCleaning", "Cleaning house for money bitch", 420, "day"),
+                    new Service("HouseCleaning 2", "Cleaning house for money bitch", 69, "hour")
+                },
+                Name = "Cleaning Company 2",
+                Email = "cleaning2@gmail.com",
+                Description = "Company 2 for testing purposes",
+                Rating = 4.2f,
+                Phone = "420-420-420",
+                Location = "Warsaw",
+                Owner = Users[1],
+                Category = Categories[0],
+                Website = "www.cleaning2.com"
+            }
         };
-
-        public static List<Service> Services = new List<Service>
-        {
-            new Service("HouseCleaning", "Cleaning house for money bitch", 420, "day", Companies[0]),
-            new Service("HouseCleaning 2", "Cleaning house for money bitch", 69, "hour", Companies[0])
-        };
-
     }
 }

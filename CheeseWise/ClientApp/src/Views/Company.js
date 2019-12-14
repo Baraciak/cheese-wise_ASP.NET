@@ -20,18 +20,14 @@ class Company extends Component {
             this.state = {
                 showModal: false,
                 company: this.props.company,
-                services:[],
                 isCompanyLoaded: true,
-                isServicesLoaded: true,
                 editMode: true,
             }
         }else{
             this.state = { 
                 showModal: false,
                 company:{},
-                services:[],
                 isCompanyLoaded: false,
-                isServicesLoaded: false,
                 editMode: false
             }
         }
@@ -40,7 +36,6 @@ class Company extends Component {
     componentDidMount = () =>{
         if(!this.props.createMode){
             this.fetchCompany(this.props.companyId);
-            this.fetchServices(this.props.companyId);
         }
     }
 
@@ -52,7 +47,6 @@ class Company extends Component {
         this.setState({editMode: false});
         //saveCompany() uses postCompany/putCompany
         this.saveCompany();
-        // this.postServices();
     }
 
     handleDelete = () => {
@@ -61,12 +55,11 @@ class Company extends Component {
     }
 
     render() { 
-        const {isCompanyLoaded, isServicesLoaded, company, editMode} = this.state;
-        const isStateLoaded = isCompanyLoaded && isServicesLoaded;
+        const {isCompanyLoaded, company, editMode} = this.state;
 
         return ( 
             <React.Fragment>
-                {isStateLoaded
+                {isCompanyLoaded
                 ?
                 <React.Fragment>
                     <CompanyInfo onSaveCompanyInfo={this.handleSaveCompanyInfo} 
@@ -80,7 +73,7 @@ class Company extends Component {
                     <ServicesTable onAddService={this.handleAddService}
                                     onRemoveService={this.handleRemoveService} 
                                     editMode={editMode} 
-                                    services={this.state.services}/>
+                                    services={this.state.company.services}/>
                     {/* if curr user is owner of this company render edit/save btns*/}
                     {/* iff currentUser comes to this paths we knows that he is an owner of this company */}
                     {["/action/create-company", "/action/show-company"].includes(history.location.pathname) 
@@ -132,7 +125,7 @@ class Company extends Component {
         company.owner = {id: parseInt(this.props.currentUser.id)};
         company.category = {id: parseInt(data.get("category"))};
         company.location = data.get("location");
-        company.description = this.state.company.description;
+        company.website = data.get("website");
         this.setState({company});
         // console.log(company, 'compInfo');
     }
@@ -151,23 +144,22 @@ class Company extends Component {
 
         const data = new FormData(event.target);
         const service = {
-            'Name': data.get("name"),
-            'Description': data.get("description"),
-            'Price': parseInt(data.get("price")),
-            'PriceCategory': data.get("priceCategory"),
-            'Company': this.state.company
+            'name': data.get("name"),
+            'description': data.get("description"),
+            'price': parseInt(data.get("price")),
+            'priceCategory': data.get("priceCategory")
         };
+        const company = this.state.company;
+        company.services = [...this.state.company.services, service];
+        this.setState({company});
 
-        console.log(service, 'addService');
-        //da fuk dont fcking work, 
-        //everything fcking null on backend 
-        this.postService(service);
+        console.log(this.state.company);
     }
 
     handleRemoveService = (id) =>{
         //should return 
         this.deleteService(id);
-        let services = this.state.services;
+        let services = this.state.company.services;
         services = services.filter(service => service.id !== id);
         this.setState({services});
     }
@@ -234,41 +226,7 @@ class Company extends Component {
         })
         .catch(error => console.log(error))
     }
-
-    postService = (service) =>{
-        return fetch("https://localhost:44356/api/services", 
-        {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ sessionStorage.token
-            },
-            body: JSON.stringify(service)
-        })
-        .then(res => handleResponse(res))
-        .then(resJson => {      
-            console.log(resJson, 'service json response'); 
-            this.setState({services: [...this.state.services, resJson.service]});
-        })
-        .catch(error => console.log(error))
-    }
-
-    deleteService = (serviceId) =>{
-        return fetch(`https://localhost:44356/api/services/${serviceId}`, 
-        {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ sessionStorage.token
-            }
-        })
-        .then(res => handleResponse(res))
-        .catch(error => console.log(error))
-    }
     
-
     fetchCompany = companyId =>{
         fetch(`https://localhost:44356/api/Companies/${companyId}`, 
         {
@@ -280,21 +238,6 @@ class Company extends Component {
             {
                 company: resJson, 
                 isCompanyLoaded: true
-            }))
-        .catch(err => console.log(err));
-    }
-
-    fetchServices = companyId => {
-        fetch(`https://localhost:44356/api/Services/Company/${companyId}`, 
-        {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(res => handleResponse(res))
-        .then(resJson => this.setState(
-            {
-                services: resJson,
-                isServicesLoaded: true
             }))
         .catch(err => console.log(err));
     }

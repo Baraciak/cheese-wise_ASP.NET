@@ -21,11 +21,18 @@ namespace CheeseWise.DB
         {
 
         }
+        //        public CheeseWiseDbContext()
+        //        {
+        //            AddSampleData();
+        //        }
 
-        public CheeseWiseDbContext()
-        {
-            AddSampleData();
-        }
+//        protected override void OnModelCreating(ModelBuilder modelBuilder)
+//        {
+//            modelBuilder.Entity<Company>()
+//                .HasMany(c => c.Services)
+//                .WithOne(c=>c.)
+//                .OnDelete(DeleteBehavior.SetNull + -*);
+//        }
 
         private void AddSampleData()
         {
@@ -33,9 +40,7 @@ namespace CheeseWise.DB
             Accounts.AddRange(SampleData.Accounts);
             Categories.AddRange(SampleData.Categories);
             Companies.AddRange(SampleData.Companies);
-            Services.AddRange(SampleData.Services);
         }
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseNpgsql("Host=localhost;Database=CheeseWiseDB;Username=postgres;Password=postgres");

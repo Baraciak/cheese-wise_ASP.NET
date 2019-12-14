@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
-using CheeseWise.Models.View;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
@@ -41,6 +39,7 @@ namespace CheeseWise.Controllers
                 .Where(b => b.Id == id)
                 .Include(a => a.Owner)
                 .Include(a => a.Category)
+                .Include(a => a.Services)
                 .SingleOrDefaultAsync();
 
 
@@ -114,6 +113,8 @@ namespace CheeseWise.Controllers
             entityCompany.Phone = company.Phone;
             entityCompany.Location = company.Location;
             entityCompany.Description = company.Description;
+            entityCompany.Services = company.Services;
+
 
             _context.Companies.Update(entityCompany);
 
@@ -155,7 +156,11 @@ namespace CheeseWise.Controllers
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Company>> DeleteCompany(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            //including services for cascade delete
+            var company =  _context.Companies
+                            .Include(c => c.Services)
+                            .FirstOrDefault(c => c.Id == id);
+
             if (company == null)
             {
                 return NotFound();

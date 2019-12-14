@@ -46,6 +46,10 @@ export default class CompanyInfo extends Component{
                             <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" name="name" defaultValue={company.name} />
                         </div>
 
+                        <div className="col-sm-10">
+                            <input onChange={this.triggerNotSaved} type="text" readOnly={!editMode} className="form-control-plaintext" name="website" defaultValue={company.website} />
+                        </div>
+
                         {/* <label htmlFor="category" className="col-sm-2 col-form-label"><small>Category</small></label> */}
                         {editMode && isStateLoaded
                         ?

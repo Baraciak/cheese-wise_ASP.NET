@@ -2,6 +2,7 @@ import React from 'react';
 
 
 const ServicesTable = ({onRemoveService, onAddService, services, editMode}) => {
+    console.log(services);
     return ( 
         <form onSubmit={onAddService}>
             <table className="table">
