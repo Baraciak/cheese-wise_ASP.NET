@@ -1,21 +1,22 @@
 import React, { Component } from 'react'
 import { authenticationService } from '../_services/authService';
+import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 
 class Login extends Component {
     render(){
         return(
-            <form onSubmit={this.handleLogin}>
-                <div className="form-group">
-                    <label htmlFor="email">Email address</label>
-                    <input name="email" type="email" className="form-control" id="email" placeholder="Enter email"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input name="password" type="password" className="form-control" id="password" placeholder="Enter Password" />
-                </div>
-                <button type="submit" className="btn btn-secondary">Login</button>
-            </form>
+            <Form onSubmit={this.handleLogin}>
+                <FormGroup>
+                    <Label htmlFor="email">Email address</Label>
+                    <Input name="email" type="email" id="email" placeholder="Enter email"/>
+                </FormGroup>
+                <FormGroup>
+                    <Label htmlFor="password">Password</Label>
+                    <Input name="password" type="password" id="password" placeholder="Enter Password" />
+                </FormGroup>
+                <Button>Login</Button>
+            </Form>
         );
     }
 

@@ -23,7 +23,7 @@ class CompaniesTable extends Component {
                     <tbody>
                         {[...companies].sort(sortTypes[currentSort].fn).map((company, index) =>
                         
-                            <tr key={company.id}>
+                            <tr key={index}>
                                     <th scope="row">{index + 1}</th>
                                     <td>
                                         <Link to={"/company/" + company.id} style={{color: 'whiteSmoke'}}>

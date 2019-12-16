@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { userActions } from '../_redux/user/duck';
 import store from '../_redux/store'
 import { handleResponse } from '../_helpers/handleResponse';
+import {Button} from 'reactstrap';
 
  
 class EditCompany extends Component {
@@ -51,7 +52,7 @@ class EditCompany extends Component {
                         <EditServicesTable onAddService={this.handleAddService}
                                         onRemoveService={this.handleRemoveService} 
                                         services={this.state.company.services}/>
-                        <button className="btn btn-primary" onClick={this.handleSave}>Save</button>
+                        <Button onClick={this.handleSave}>Save</Button>
                     </React.Fragment>
                 :
                     <LoadingLogo />
@@ -63,19 +64,20 @@ class EditCompany extends Component {
     handleSave = () => {
         //saveCompany() uses postCompany/putCompany
         this.saveCompany();
+        //push after saving
     }
 
     saveCompany = () => {
         //if create mode post new company
         if(this.props.createMode){
             this.postCompany();
-            setTimeout(() => {
-                history.push('/action/show-company')
-            }, 400);
         }else{
             //else update company
             this.putCompany();
         }
+        setTimeout(() => {
+            history.push('/action/show-company')
+        }, 400);
     }
 
     handleSaveCompanyInfo = (saveCompanyEvent) =>{

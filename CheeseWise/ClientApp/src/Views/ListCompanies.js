@@ -3,7 +3,6 @@ import CompaniesTable from '../_components/companies/companiesTable';
 
 const sortTypes = {
 	ascR: {
-        name: 'asc',
 		fn: (a, b) => {
             if(a.rating < b.rating) { return -1; }
             if(a.rating > b.rating) { return 1; }
@@ -11,19 +10,16 @@ const sortTypes = {
         }
 	},
 	descR: {
-        name: 'desc',
 		fn: (a, b) => {
-            if(a.rating < b.rating) { return -1; }
-            if(a.rating > b.rating) { return 1; }
+            if(a.rating > b.rating) { return -1; }
+            if(a.rating < b.rating) { return 1; }
             return 0;
         }
     },
     default: {
-        name: 'default',
         fn: (a, b) => 0
     },
     ascN: {
-        name: 'asc',
 		fn: (a, b) => {
             if(a.name.toUpperCase() < b.name.toUpperCase()) { return -1; }
             if(a.name.toUpperCase() > b.name.toUpperCase()) { return 1; }
@@ -31,10 +27,9 @@ const sortTypes = {
         }
 	},
 	descN: {
-        name: 'desc',
 		fn: (a, b) => {
-            if(a.name.toUpperCase() < b.name.toUpperCase()) { return -1; }
-            if(a.name.toUpperCase() > b.name.toUpperCase()) { return 1; }
+            if(a.name.toUpperCase() > b.name.toUpperCase()) { return -1; }
+            if(a.name.toUpperCase() < b.name.toUpperCase()) { return 1; }
             return 0;
         }
     }
@@ -50,9 +45,8 @@ class ListCompanies extends Component {
         const { currentSort } = this.state;
 		let nextSort;
 
-		if (currentSort === 'descR') nextSort = 'ascR';
-		else if (currentSort === 'ascR') nextSort = 'default';
-		else if (currentSort === 'default') nextSort = 'descR';
+		if (['ascN','descN', 'descR','default'].includes(currentSort)) nextSort = 'ascR';
+        else if (currentSort === 'ascR') nextSort = 'descR';
 
 		this.setState({
 			currentSort: nextSort
@@ -61,11 +55,10 @@ class ListCompanies extends Component {
 
     sortByName = () =>{
         const { currentSort } = this.state;
-		let nextSort;
-
-		if (currentSort === 'descN') nextSort = 'ascN';
-		else if (currentSort === 'ascN') nextSort = 'default';
-		else if (currentSort === 'default') nextSort = 'descN';
+        let nextSort;
+        
+		if (['ascN', 'ascR', 'descR','default'].includes(currentSort)) nextSort = 'descN';
+		else if (currentSort === 'descN') nextSort = 'ascN';
 
 		this.setState({
 			currentSort: nextSort
@@ -76,14 +69,12 @@ class ListCompanies extends Component {
     render() {
         return ( 
             <React.Fragment>
-                <br/>
-                <CompaniesTable currentSort={this.state.currentSort} sortTypes={sortTypes} sortRating={this.sortByRating} sortName={this.sortByRating} companies={this.state.companies}/>
+                <CompaniesTable currentSort={this.state.currentSort} sortTypes={sortTypes} sortRating={this.sortByRating} sortName={this.sortByName} companies={this.state.companies}/>
             </React.Fragment>
         );
     }
 
     componentDidMount = () =>{
-        // console.log(this.props.categoryId);
         this.setCompaniesApi(this.props.categoryId);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }

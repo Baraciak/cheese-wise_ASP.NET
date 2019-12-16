@@ -1,18 +1,16 @@
 #search-bar input
 {
-    background: transparent;
+    background-color: whitesmoke;
     margin-left: 63px;
     width: 975px;
-    border-radius: 0;
 }
 
 
 
 #search-bar input:focus
 {
-    color: whitesmoke;
     border: 3px whitesmoke solid;
-    background-color: transparent;
+    outline: none;
 }
 
 .card

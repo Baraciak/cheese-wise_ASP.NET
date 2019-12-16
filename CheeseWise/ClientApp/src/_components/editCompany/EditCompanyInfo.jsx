@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import LoadingLogo from '../common/loadingLogo';
+import { Button, Form, FormGroup, Label, Input, Row, Col} from 'reactstrap';
  
 export default class EditCompanyInfo extends Component{
     constructor(props){
@@ -37,59 +38,103 @@ export default class EditCompanyInfo extends Component{
         const {categories, isStateLoaded} = this.state;
 
         return ( 
-            <form onSubmit={this.save} id="company-info" className="container form-group">
-                <div id="info" className="form-group row m-2 ">   
+            <Form inline onSubmit={this.save} id="company-info" className="container form-group">
+                <FormGroup id="info" className="form-group row m-2 ">   
 
-                    <div className="form-group row m-2">
-                        <label htmlFor="name" className="col-sm-2 col-form-label"><small>Name</small></label>
-                        <input id="name" onChange={this.triggerNotSaved} type="text" className="col-sm-10 form-control-plaintext" name="name" placeholder={company.name} />
-                    </div>
+                <Row form>
+                    <FormGroup className="row m-2">
+                        <Col sm={2}>
+                            <Label htmlFor="name" className="col-form-label"><small>Name</small></Label>
+                        </Col>
+                        <Col sm={10}>
+                            <Input id="name" onChange={this.triggerNotSaved} type="text" className="inp form-control-plaintext" name="name" placeholder={company.name} />
+                        </Col>
+                    </FormGroup>
+                </Row>
+                <Row form>
+                    <FormGroup className="row m-2">
+                        <Col sm={2}>
+                            <Label htmlFor="website" className="col-form-label"><small>Website</small></Label>
+                        </Col>
+                        <Col sm={10}>
+                            <Input onChange={this.triggerNotSaved} type="text" className="inp form-control-plaintext" id="website" name="website" placeholder={company.website} />
+                        </Col>
+                    </FormGroup>
+                </Row>
 
-                    <div className="form-group row m-2">
-                        <label htmlFor="website" className="col-sm-2 col-form-label"><small>Website</small></label>
-                        <input onChange={this.triggerNotSaved} type="text" className="col-sm-10 form-control-plaintext" id="website" name="website" placeholder={company.website} />
-                    </div>
+                <Row form>
+                    <FormGroup className="row m-2">
+                    <Col sm={2}>
+                        <Label htmlFor="category" className="col-form-label"><small>Category</small></Label>
+                    </Col>
 
-                    <div className="form-group row m-2">
-                        <label htmlFor="category" className="col-sm-2 col-form-label"><small>Category</small></label>
                         {isStateLoaded
                         ?
-                            <select value={this.state.selectTagValue} onChange={this.handleSelectChange} id="category" name="category" className="col-sm-10">
-                                {categories.map((category, index) => 
-                                    <option key={index} value={category.id}>{category.name}</option>
-                                )}
-                            </select>
+                            <Col sm={10}>
+                                <select value={this.state.selectTagValue} 
+                                        onChange={this.handleSelectChange}
+                                        id="category" 
+                                        name="category">
+                                    {categories.map((category, index) => 
+                                        <option key={index} value={category.id}>{category.name}</option>
+                                    )}
+                                </select>
+                            </Col>
                         :
                             <LoadingLogo />
                         }
-                    </div>
+                    </FormGroup>
+                </Row>
 
-
-                    <div className="form-group row m-2">
-                        <label htmlFor="category" className="col-sm-2 col-form-label"><small>Location</small></label>
-                        <input onChange={this.triggerNotSaved} type="text" className="col-sm-10 form-control-plaintext" name="location" placeholder={company.location} />
-                    </div>
-
-                    <div className="form-group row m-2">
-                        <label htmlFor="category" className="col-sm-2 col-form-label"><small>Phone</small></label>
-                        <input onChange={this.triggerNotSaved} type="text" className="col-sm-10 form-control-plaintext" name="phone" placeholder={company.phone} />
-                    </div>
-
-                    <div className="form-group row m-2">
-                        <label htmlFor="category" className="col-sm-2 col-form-label"><small>Email</small></label>
-                        <input onChange={this.triggerNotSaved} type="email" className="col-sm-10 form-control-plaintext" name="email" placeholder={company.email} />
-                    </div>
-
-                </div>
+                <Row form>
+                    <FormGroup className="form-group row m-2">
+                        <Col sm={2}>
+                            <Label htmlFor="category" className="col-form-label"><small>Location</small></Label>
+                        </Col>
+                        <Col sm={10}>
+                            <Input onChange={this.triggerNotSaved} type="text" className="inp form-control-plaintext" name="location" placeholder={company.location} />
+                        </Col>
+                    </FormGroup>
+                </Row>
+                <Row form>
+                    <FormGroup className="form-group row m-2">
+                        <Col sm={2}>
+                            <Label htmlFor="phone" className="col-form-label"><small>Phone</small></Label>
+                        </Col>
+                        <Col sm={10}>
+                            <Input onChange={this.triggerNotSaved} 
+                                    type="text" 
+                                    className="inp form-control-plaintext" 
+                                    id="phone"
+                                    name="phone" 
+                                    placeholder={company.phone} />
+                        </Col>
+                    </FormGroup>
+                </Row>
+                <Row form>        
+                    <FormGroup className="form-group row m-2">
+                        <Col sm={2}>
+                            <Label htmlFor="category" className="col-form-label"><small>Email</small></Label>
+                        </Col>
+                        <Col sm={10}>
+                            <Input onChange={this.triggerNotSaved} 
+                                    type="email" 
+                                    name="email" 
+                                    className="inp form-control-plaintext" 
+                                    placeholder={company.email} />
+                        </Col>
+                    </FormGroup>
+                </Row>
+                </FormGroup>
                 <div className="container">
                     {this.state.isSaved
                     ?<small className="text-secondary">Changes saved.</small>
-                    :<button type="submit" className="btn btn-danger">
+                    :<Button type="submit">
                         <big>Save</big>
-                    </button>
+                    </Button>
                     }
                 </div>
-            </form>
+            </Form>
         );
     }
 

@@ -11,7 +11,7 @@ import store from '../_redux/store'
 import DeleteModal from '../_components/common/DeleteModal';
 import { handleResponse } from '../_helpers/handleResponse';
 import {Link} from 'react-router-dom';
-
+import { Button} from 'reactstrap';
  
 class Company extends Component {
     constructor(props){
@@ -60,10 +60,10 @@ class Company extends Component {
                     {["/action/create-company", "/action/show-company"].includes(history.location.pathname) 
                     ?
                     <div>
-                        <button className="btn btn-primary" onClick={this.handleEdit}>
-                            <Link to={`/action/edit-company/${this.state.company.id}`}>Edit</Link>
-                        </button>
-                        <button className="btn btn-danger ml-2" onClick={this.toggleModal}>Delete</button>
+                        <Button className="btn btn-primary" onClick={this.handleEdit}>
+                            <Link to={`/action/edit-company/${this.state.company.id}`} style={{textDecoration: 'none', color: 'whitesmoke'}}>Edit</Link>
+                        </Button>
+                        <Button className="btn btn-danger ml-2" onClick={this.toggleModal}>Delete</Button>
                     </div>
                     :
                     //if user is not an owner dont render edit/save btns

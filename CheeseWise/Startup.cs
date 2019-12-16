@@ -4,11 +4,8 @@ using CheeseWise.DB;
 using CheeseWise.Services;
 using CheeseWise.Services.Abstraction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Serialization;
 
 namespace CheeseWise
 {
@@ -33,8 +29,6 @@ namespace CheeseWise
         public void ConfigureServices(IServiceCollection services)
         {
 
-//            services.AddControllersWithViews();
-
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -44,11 +38,12 @@ namespace CheeseWise
             services.AddDbContext<CheeseWiseDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DbConnString")));
 
-            //here add sample data
-//            var context = new CheeseWiseDbContext();
-//            context.SaveChanges();
 
-            
+            //here add sample data
+            //            var context = new CheeseWiseDbContext();
+            //            context.SaveChanges();
+
+
             var symmetricSecurityKey =
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"]));
 
@@ -69,8 +64,12 @@ namespace CheeseWise
                 },
                 ValidAudience = Configuration["Jwt:Site"],
                 ValidIssuer = Configuration["Jwt:Site"],
-                IssuerSigningKey = symmetricSecurityKey,
+                IssuerSigningKey = symmetricSecurityKey
             };
+//
+//            services.AddIdentity<User, IdentityRole>()
+//                .AddEntityFrameworkStores<ApplicationDbContext>()
+//                .AddDefaultTokenProviders();
 
             services.AddAuthentication(option =>
             {
@@ -89,6 +88,12 @@ namespace CheeseWise
                 {
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     policy.RequireAuthenticatedUser().Build();
+                });
+
+                options.AddPolicy("User", policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser().RequireRole("User").Build();
                 });
             });
 
