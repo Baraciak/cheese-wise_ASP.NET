@@ -27,13 +27,7 @@ const Navbar = (props) => {
                         </React.Fragment>
                         :
                         <React.Fragment>
-                            {/* <nav className="navbar navbar-dark bg-dark"> */}
                                 <Dropdown onLogout={props.onLogout} currentUser={currentUser}/>
-                            {/* </nav> */}
-                            
-                            {/* <nav className="navbar navbar-dark bg-dark">
-                                <Link onClick={props.onLogout} className="navbar-brand" to="/"><small>Logout</small></Link>
-                            </nav> */}
                         </React.Fragment>
                     }
 

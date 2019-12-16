@@ -16,8 +16,8 @@ class UpBtn extends Component {
             <div className="up-btn">
                 {this.state.pageYOffset
                 ?
-                <button  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                    <i className="fas fa-chevron-circle-up"></i>
+                <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                    <i className="fas fa-chevron-up"></i>
                 </button>
                 :
                 null

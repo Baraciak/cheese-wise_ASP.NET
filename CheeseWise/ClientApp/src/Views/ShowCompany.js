@@ -3,7 +3,7 @@ import Company from './Company';
 import LoadingLogo from '../_components/common/loadingLogo';
 import { connect } from 'react-redux';
 
-class AccountOverview extends Component {
+class ShowCompany extends Component {
     state={
         companyId: null,
         isCompanyLoaded: false
@@ -13,9 +13,7 @@ class AccountOverview extends Component {
         this.fetchCompany();
     }
 
-    render() {
-        // console.log(this.props.currentUser);
-        
+    render() {        
         return ( 
             <React.Fragment>
                 {this.state.isCompanyLoaded
@@ -24,7 +22,6 @@ class AccountOverview extends Component {
                 :
                 <LoadingLogo/>
                 }
-                
             </React.Fragment>
         );
     }
@@ -49,4 +46,4 @@ const mapStateToProps = (state) =>({
     currentUser: state.currentUser
 })  
 
-export default connect(mapStateToProps, {})(AccountOverview);
+export default connect(mapStateToProps, {})(ShowCompany);

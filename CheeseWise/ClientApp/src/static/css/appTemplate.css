@@ -1,8 +1,8 @@
 body
 {
-    background-color: rgb(255, 255, 255);
+    background-color: #E9C46A;
     font-family: 'Overpass', sans-serif;
-    color: dimgray;
+    color: whitesmoke;
 }
 
 .navbar
@@ -10,19 +10,10 @@ body
     height: 80px;
 }
 
-.up-btn
-{
-
-    margin-left: auto;
-    margin-right:auto;
-    width: 62px;
-    position: fixed;
-    bottom: 100px;
-    right: 40px;
-}
-
 .up-btn button
 {
+    margin-left: 48%;
+    margin-right: 52%;
     background: transparent;
     border: none;
 }
@@ -33,17 +24,10 @@ body
     border: none;
 }
 
-.back-btn button i
-{
-    background: transparent;
-    border: none;
-    margin-left: 150px;
-}
-
 button i 
 {
     font-size: 60px;
-    color: rgb(63, 63, 63);
+    color: whitesmoke;
     transition: transform ease-in-out .1s;
 
 }
@@ -65,11 +49,33 @@ button i:active
 #site-wrapper
 {
     min-height: 1000px;
-    padding-top: 50px;
+    padding-top: 100px;
 }
 
 #content-wrapper
 {
-    /* background-color: rgb(29, 189, 238) ; */
-    padding: 30px;
+    background-color: #F25F5C;
+    padding: 20px;
+    min-height: 800px;
+}
+
+.box-shadow
+{
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    min-height: 800px;
+}
+
+.sort-btn
+{
+    background: transparent;
+    border: none;
+    font-size: 17px;
+    color: whitesmoke;
+}
+
+.sort-btn:hover
+{
+    text-decoration: underline;
 }

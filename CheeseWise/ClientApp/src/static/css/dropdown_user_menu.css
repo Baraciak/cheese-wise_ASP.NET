@@ -6,6 +6,13 @@
 
 .dropdown-menu .col .link:hover
 {
-    color: yellow;
+    color: #FFE066;
     text-decoration: underline;
+}
+
+button
+{
+    color: #FFE066;
+    background: transparent;
+    border: none;
 }

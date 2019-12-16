@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import Company from './Company';
+import EditCompany from './EditCompany';
 
 class CreateCompany extends Component{
     state = {
@@ -20,7 +20,7 @@ class CreateCompany extends Component{
     }
     render(){
         return(
-            <Company createMode={true} company={this.state.company}/>
+            <EditCompany createMode={true} company={this.state.company}/>
         );
     }
 }

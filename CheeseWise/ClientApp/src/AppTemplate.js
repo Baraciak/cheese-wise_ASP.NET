@@ -3,7 +3,8 @@ import { Router } from 'react-router-dom';
 import {Route, Switch} from 'react-router';
 import { connect } from 'react-redux';
 
-import AccountOverview from './Views/AccountOverview';
+import EditCompany from './Views/EditCompany';
+import ShowCompany from './Views/ShowCompany';
 import ListCompanies from './Views/ListCompanies';
 import Register from './Views/Register';
 import Company from './Views/Company';
@@ -47,7 +48,10 @@ class AppTemplate extends Component {
 								render={props => <Company companyId={props.match.params.companyId}/>}/>
 
 							{this.props.hasCompany
-							?<ProtectedRoute  path="/action/show-company" exact component={AccountOverview} />
+							?	<React.Fragment>
+									<ProtectedRoute  path="/action/show-company" exact component={ShowCompany} />
+									<ProtectedRoute  path="/action/edit-company/:id" exact component={EditCompany} />
+								</React.Fragment>
 							:<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
 							}
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import BackBtn from '../common/backBtn';
 import Footer from '../common/footer';
-import UpBtn from '../common/upBtn';
 import Navbar from '../common/navbar';
 
 export class Layout extends Component {
@@ -13,13 +12,13 @@ export class Layout extends Component {
       <React.Fragment>
         <Navbar onLogout={this.props.onLogout}/>
           <div id="site-wrapper">
-            <BackBtn />
             <div id="content-wrapper" className="container">
+              <BackBtn />
 
               {this.props.children}
 
+
             </div>
-            <UpBtn />
           </div>
         <Footer />
       </React.Fragment>

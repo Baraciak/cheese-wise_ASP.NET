@@ -1,8 +1,10 @@
 import React from 'react';
+import UpBtn from './upBtn';
 
 const Footer = () => {
     return ( 
         <footer id="sticky-footer" className="py-4 bg-dark text-white-50">
+            <UpBtn />
             <div className="container text-center">
                 <small>Copyright &copy; www.novit$ky.com</small>
                 <br />

@@ -109,6 +109,8 @@ namespace CheeseWise.Controllers
             }
 
             entityCompany.Category = category;
+            entityCompany.Name = company.Name;
+            entityCompany.Website = company.Website;
             entityCompany.Email = company.Email;
             entityCompany.Phone = company.Phone;
             entityCompany.Location = company.Location;

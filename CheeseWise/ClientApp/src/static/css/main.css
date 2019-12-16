@@ -3,22 +3,25 @@
     background: transparent;
     margin-left: 63px;
     width: 975px;
+    border-radius: 0;
 }
+
+
 
 #search-bar input:focus
 {
-    border: 2px #FFC857 solid;
+    color: whitesmoke;
+    border: 3px whitesmoke solid;
+    background-color: transparent;
 }
-
 
 .card
 {
-    filter: invert(42%) sepia(0%) saturate(1%) hue-rotate(11deg) brightness(80%) contrast(97%); 
+    /* filter: invert(42%) sepia(0%) saturate(1%) hue-rotate(11deg) brightness(80%) contrast(97%);  */
     background: transparent;
     border-style: none;
     transition: transform .2s ease-in-out;
     width: 140px;
-    text-align: center;
     cursor: pointer;
 }
 
@@ -35,18 +38,15 @@
 
 .card-text
 {
-    margin-left: 0;
+    text-align: center;
+    max-width: 140px;
+    text-decoration: none;
+    color: whitesmoke;
 }
 
 h2
 {
     text-align: center;
-}
-
-#link
-{
-    text-decoration: none;
-    color: black;
 }
 
 .row

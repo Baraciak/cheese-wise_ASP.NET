@@ -9,8 +9,8 @@ class Dropdown extends Component {
     render(){
         return(
             <div className="dropdown btn-group dropleft" id="user-dropdown-menu">
-                <button className="dropdown-toggle btn btn-outline-warning" data-toggle="dropdown" id="dropdownMenuButton" 
-                aria-haspopup="true" aria-expanded="false">|||</button>
+                <button className="dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" 
+                aria-haspopup="true" aria-expanded="false">| | |</button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <div className="col">
                         <span className="navbar-brand"><small> Hello {this.props.currentUser.name}</small></span>

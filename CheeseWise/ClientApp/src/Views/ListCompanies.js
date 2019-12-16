@@ -1,16 +1,83 @@
 import React, { Component } from 'react';
 import CompaniesTable from '../_components/companies/companiesTable';
 
+const sortTypes = {
+	ascR: {
+        name: 'asc',
+		fn: (a, b) => {
+            if(a.rating < b.rating) { return -1; }
+            if(a.rating > b.rating) { return 1; }
+            return 0;
+        }
+	},
+	descR: {
+        name: 'desc',
+		fn: (a, b) => {
+            if(a.rating < b.rating) { return -1; }
+            if(a.rating > b.rating) { return 1; }
+            return 0;
+        }
+    },
+    default: {
+        name: 'default',
+        fn: (a, b) => 0
+    },
+    ascN: {
+        name: 'asc',
+		fn: (a, b) => {
+            if(a.name.toUpperCase() < b.name.toUpperCase()) { return -1; }
+            if(a.name.toUpperCase() > b.name.toUpperCase()) { return 1; }
+            return 0;
+        }
+	},
+	descN: {
+        name: 'desc',
+		fn: (a, b) => {
+            if(a.name.toUpperCase() < b.name.toUpperCase()) { return -1; }
+            if(a.name.toUpperCase() > b.name.toUpperCase()) { return 1; }
+            return 0;
+        }
+    }
+};
+
 class ListCompanies extends Component {
     state = { 
-        companies: []
+        companies: [],
+        currentSort: 'default'
     }
+
+    sortByRating = () =>{
+        const { currentSort } = this.state;
+		let nextSort;
+
+		if (currentSort === 'descR') nextSort = 'ascR';
+		else if (currentSort === 'ascR') nextSort = 'default';
+		else if (currentSort === 'default') nextSort = 'descR';
+
+		this.setState({
+			currentSort: nextSort
+		});
+    }
+
+    sortByName = () =>{
+        const { currentSort } = this.state;
+		let nextSort;
+
+		if (currentSort === 'descN') nextSort = 'ascN';
+		else if (currentSort === 'ascN') nextSort = 'default';
+		else if (currentSort === 'default') nextSort = 'descN';
+
+		this.setState({
+			currentSort: nextSort
+		});
+    }
+
 
     render() {
         return ( 
             <React.Fragment>
                 <br/>
-                <CompaniesTable companies={this.state.companies}/>
+                <CompaniesTable currentSort={this.state.currentSort} sortTypes={sortTypes} sortRating={this.sortByRating} sortName={this.sortByRating} companies={this.state.companies}/>
             </React.Fragment>
         );
     }
