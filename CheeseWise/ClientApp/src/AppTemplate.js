@@ -14,7 +14,7 @@ import App from './App';
 
 import {Layout} from './_components/layout/Layout';
 import {ProtectedRoute} from "./_components/protectedRoute"
-import {authenticationService} from "./_services/authService"
+import {authService} from "./_services/authService"
 
 import history from './_helpers/history';
 import './static/css/appTemplate.css';
@@ -24,18 +24,14 @@ class AppTemplate extends Component {
     //runs at page refresh
   	componentWillMount() {
 		if(sessionStorage.token !== undefined){
-			authenticationService.loginByToken();
+			authService.loginByToken();
 		}
   	}
-
-  	handleLogout() {
-		authenticationService.logout();
-	}
 	
   	render() {         
     	return (         
       		<Router history={history}>
-        		<Layout onLogout={this.handleLogout}>
+        		<Layout>
 
           			<Switch>
 						<App>
@@ -48,15 +44,16 @@ class AppTemplate extends Component {
 								render={props => <Company companyId={props.match.params.companyId}/>}/>
 
 							{this.props.hasCompany
-							?	<React.Fragment>
-									<ProtectedRoute  path="/action/show-company" exact component={ShowCompany} />
-									<ProtectedRoute  path="/action/edit-company/:id" exact component={EditCompany} />
-								</React.Fragment>
-							:<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
+							?	
+							<React.Fragment>
+								<ProtectedRoute  path="/action/show-company" exact component={ShowCompany} />
+								<ProtectedRoute  path="/action/edit-company/:id" exact component={EditCompany} />
+							</React.Fragment>
+							:
+							<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
 							}
 
 							<Route path={"/account/register"} exact component={Register} />
-
 							<Route path={"/account/login"} exact component={Login}/>
 						</App>
          			</Switch>

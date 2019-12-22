@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { authenticationService } from '../_services/authService';
+import { authService } from '../_services/authService';
 import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 
@@ -29,7 +29,7 @@ class Login extends Component {
             Password: data.get("password")
         }
         
-        authenticationService.login(accountData);
+        authService.login(accountData);
     }
 }
 

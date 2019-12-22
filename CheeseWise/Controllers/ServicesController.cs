@@ -85,6 +85,8 @@ namespace CheeseWise.Controllers
             return NoContent();
         }
 
+
+        //unused because it updates in company
         // POST: api/Services
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -92,7 +94,7 @@ namespace CheeseWise.Controllers
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Service>> PostService(Service service)
         {
-//            service.Company = _context.Companies.FirstOrDefault(c => c.Id == service.Company.Id);
+//            service = _context.Companies.FirstOrDefault(c => c.Id == service.Company.Id);
 //
 //            _context.Services.Add(service);
 //

@@ -95,6 +95,7 @@ namespace CheeseWise.Controllers
             var entityCompany = _context.Companies
                                         .Include(c => c.Category)
                                         .Include(c => c.Owner)
+//                                        .Include(c => c.Services)
                                         .FirstOrDefault(c => c.Id == id);
 
             if (entityCompany == null)
@@ -119,6 +120,10 @@ namespace CheeseWise.Controllers
 
 
             _context.Companies.Update(entityCompany);
+
+
+//            _context.Services.Remove(company);
+//            await _context.SaveChangesAsync();
 
             try
             {

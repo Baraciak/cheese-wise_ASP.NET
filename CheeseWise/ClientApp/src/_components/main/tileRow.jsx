@@ -1,10 +1,10 @@
 import React from 'react';
 import Tile from './tile';
 
-const TileRow = (props) => {
+const TileRow = ({categories}) => {
     return (
         <div className="row">
-            {props.categories.map((category, index) =>
+            {categories.map((category, index) =>
                 <div key={index} className="col-sm">
                     <Tile category={category}/>
                 </div>

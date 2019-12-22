@@ -6,26 +6,24 @@ import Navbar from '../common/navbar';
 export class Layout extends Component {
   static displayName = Layout.name;
   
+  componentDidMount(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
   render () {
-
     return (
       <React.Fragment>
-        <Navbar onLogout={this.props.onLogout}/>
+        <Navbar/>
           <div id="site-wrapper">
             <div id="content-wrapper" className="container">
               <BackBtn />
 
               {this.props.children}
 
-
             </div>
           </div>
         <Footer />
       </React.Fragment>
     );
-  }
-
-  componentDidMount(){
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

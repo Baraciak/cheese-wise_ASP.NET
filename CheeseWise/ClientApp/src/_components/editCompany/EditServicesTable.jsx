@@ -2,7 +2,6 @@ import React from 'react';
 
 
 const EditServicesTable = ({onRemoveService, onAddService, services}) => {
-    console.log(services);
     return ( 
         <form onSubmit={onAddService}>
             <table className="table">
@@ -18,7 +17,9 @@ const EditServicesTable = ({onRemoveService, onAddService, services}) => {
                 {services.map((service, index) =>
                     <tr key={index}>
                         <th scope="row">
-                            <button type="button" onClick={() => onRemoveService(service.id)} className="btn btn-danger">
+                            <button type="button" 
+                                    onClick={() => onRemoveService(service.id)} 
+                                    className="btn btn-danger">
                                 <big>-</big>
                             </button>
                         </th>

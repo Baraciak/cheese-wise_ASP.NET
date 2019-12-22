@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Company from './Company';
 import LoadingLogo from '../_components/common/loadingLogo';
 import { connect } from 'react-redux';
+import { companyApi } from '../_helpers/companyApi';
 
 class ShowCompany extends Component {
     state={
@@ -27,19 +28,9 @@ class ShowCompany extends Component {
     }
 
     //get company by user id
-    fetchCompany = () => {
-        fetch(`https://localhost:44356/api/Companies/User/${this.props.currentUser.id}`, 
-        {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(res => res.json())
-        .then(resJson => this.setState(
-            {
-                companyId: resJson.company.id,
-                isCompanyLoaded: true
-            }))
-        .catch(err => console.log(err));
+    fetchCompany = async() => {
+        const response = await companyApi.getByUserId(this.props.currentUser.id);
+        this.setState({companyId: response.company.id, isCompanyLoaded: true});
     }
 }
 const mapStateToProps = (state) =>({

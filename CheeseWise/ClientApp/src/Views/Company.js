@@ -1,17 +1,22 @@
 import React, { Component} from 'react';
-import '../static/css/company.css';
+import {Link} from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Button} from 'reactstrap';
+import { companyApi } from '../_helpers/companyApi';
+import history from "../_helpers/history";
+
 import CompanyInfo from '../_components/viewCompany/companyInfo';
 import TextBox from '../_components/viewCompany/textBox';
 import LoadingLogo from '../_components/common/loadingLogo';
 import ServicesTable from '../_components/viewCompany/servicesTable';
-import history from "../_helpers/history";
-import { connect } from 'react-redux';
+import DeleteModal from '../_components/common/DeleteModal';
+
 import { userActions } from '../_redux/user/duck';
 import store from '../_redux/store'
-import DeleteModal from '../_components/common/DeleteModal';
-import { handleResponse } from '../_helpers/handleResponse';
-import {Link} from 'react-router-dom';
-import { Button} from 'reactstrap';
+
+
+
+import '../static/css/company.css';
  
 class Company extends Component {
     constructor(props){
@@ -44,7 +49,7 @@ class Company extends Component {
     }
 
     render() { 
-        const {isCompanyLoaded, company} = this.state;
+        const {isCompanyLoaded, company, showModal} = this.state;
 
         return ( 
             <React.Fragment>
@@ -54,16 +59,19 @@ class Company extends Component {
                     <CompanyInfo company={company}/>
                     <TextBox description={company.description}/>
                     <br />
-                    <ServicesTable services={this.state.company.services}/>
+                    <ServicesTable services={company.services}/>
                     {/* if curr user is owner of this company render edit/save btns*/}
                     {/* iff currentUser comes to this paths we knows that he is an owner of this company */}
                     {["/action/create-company", "/action/show-company"].includes(history.location.pathname) 
                     ?
                     <div>
                         <Button className="btn btn-primary" onClick={this.handleEdit}>
-                            <Link to={`/action/edit-company/${this.state.company.id}`} style={{textDecoration: 'none', color: 'whitesmoke'}}>Edit</Link>
+                            <Link to={`/action/edit-company/${company.id}`} 
+                                  style={{textDecoration: 'none', color: 'whitesmoke'}}
+                                  >Edit
+                            </Link>
                         </Button>
-                        <Button className="btn btn-danger ml-2" onClick={this.toggleModal}>Delete</Button>
+                        <Button className="ml-2" onClick={this.toggleModal}>Delete</Button>
                     </div>
                     :
                     //if user is not an owner dont render edit/save btns
@@ -74,7 +82,7 @@ class Company extends Component {
                 <LoadingLogo />}
 
                 <DeleteModal message="Are yous sure you want to delete your Company?"
-                                showModal={this.state.showModal}
+                                showModal={showModal}
                                 toggle={this.toggleModal}
                                 onDelete={this.handleDelete}/>
             </React.Fragment>
@@ -85,37 +93,15 @@ class Company extends Component {
         this.setState({showModal: !this.state.showModal});
     }
 
-    deleteCompany = () => {
-        return fetch(`https://localhost:44356/api/companies/${this.props.companyId}`, 
-        {
-            method: 'delete',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ sessionStorage.token
-            }
-        })
-        .then(res => handleResponse(res))
-        .then(resJson => {
-            store.dispatch(userActions.addCompanyBool(false));
-            history.push('/');
-        })
-        .catch(error => console.log(error))
+    deleteCompany = async() => {
+        companyApi.remove(this.props.companyId)
+        store.dispatch(userActions.addCompanyBool(false));
+        history.push('/');
     }
     
-    fetchCompany = companyId =>{
-        fetch(`https://localhost:44356/api/Companies/${companyId}`, 
-        {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(res => handleResponse(res))
-        .then(resJson => this.setState(
-            {
-                company: resJson, 
-                isCompanyLoaded: true
-            }))
-        .catch(err => console.log(err));
+    fetchCompany = async (id) =>{
+        const response = await companyApi.getById(id);
+        this.setState({company: response, isCompanyLoaded: true})
     }
 };
 const mapStateToProps = (state) => ({

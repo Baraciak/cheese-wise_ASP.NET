@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import history from '../_helpers/history';
+import {authService} from '../_services/authService'
 
 
 class Register extends Component {
@@ -32,36 +32,17 @@ class Register extends Component {
         );
     }
     
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
-        const user = {
+        const userData = {
             Name: data.get("name"),
             Surname: data.get("surname"),
             Email: data.get("email"),
             Password: data.get("password")
         }
-        // const accountData = {
-        //     Email: data.get("email"),
-        //     Password: data.get("password"),
-        //     Owner: user
-        // }
-
-        fetch("https://localhost:44356/api/auth/register", 
-            {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(user)
-            }
-        )
-        .then(history.push("/account/login"))
-        .catch(error => console.log(error));
+       return await authService.register(userData);
     }
-
-
-
 }
 
 export default Register;

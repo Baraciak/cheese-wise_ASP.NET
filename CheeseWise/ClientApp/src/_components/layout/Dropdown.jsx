@@ -1,26 +1,25 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
+import { authService } from '../../_services/authService';
 
 import '../../static/css/dropdown_user_menu.css';
 
-class Dropdown extends Component {
-
-    render(){
-        return(
-            <div className="dropdown btn-group dropleft" id="user-dropdown-menu">
+const Dropdown = ({currentUser, hasCompany}) => {
+    return (
+        <div className="dropdown btn-group dropleft" id="user-dropdown-menu">
                 <button className="dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" 
                 aria-haspopup="true" aria-expanded="false">| | |</button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <div className="col">
-                        <span className="navbar-brand"><small> Hello {this.props.currentUser.name}</small></span>
+                        <span className="navbar-brand"><small> Hello {currentUser.name}</small></span>
                     </div>
 
                     <div className="col">
                         <hr/>
                     </div>
 
-                    {this.props.hasCompany
+                    {hasCompany
                     ?
                     <div className="col">
                         <Link className="link navbar-brand" to="/action/show-company">
@@ -36,18 +35,21 @@ class Dropdown extends Component {
                     }
 
                     <div className="col">
-                        <Link className="link navbar-brand " onClick={this.props.onLogout} to="/">
+                        <Link className="link navbar-brand " onClick={authService.logout} to="/">
                             <small>Logout</small>
                         </Link>
                     </div>
                 </div>
             </div>
-        )
-    }
+    )
 }
-
 const mapStateToProps = (state) =>({
+    currentUser: state.currentUser,
     hasCompany: state.hasCompany
 })
 
 export default connect(mapStateToProps, {})(Dropdown);
+
+
+
+

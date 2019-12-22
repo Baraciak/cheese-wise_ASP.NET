@@ -1,10 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import { authenticationService } from '../../_services/authService';
+import { authService } from '../../_services/authService';
 import Dropdown from '../layout/Dropdown';
+import { connect } from 'react-redux';
 
 const Navbar = (props) => {
-    const currentUser = authenticationService.getCurrentUser();
     return ( 
         <React.Fragment>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -16,7 +16,7 @@ const Navbar = (props) => {
                             </nav>
                         </li>
                     </ul>
-                    {currentUser === null ? 
+                    {props.currentUser === null ? 
                         <React.Fragment>
                             <nav className="navbar navbar-dark bg-dark">
                                 <Link className="navbar-brand" to="/account/register"><small>Register</small></Link>
@@ -27,14 +27,17 @@ const Navbar = (props) => {
                         </React.Fragment>
                         :
                         <React.Fragment>
-                                <Dropdown onLogout={props.onLogout} currentUser={currentUser}/>
+                            <Dropdown />
                         </React.Fragment>
                     }
-
                 </div>
             </nav>
         </React.Fragment>
      );
 }
- 
-export default Navbar;
+
+const mapStateToProps = state => ({
+	currentUser: state.currentUser
+});
+
+export default connect(mapStateToProps, {}) (Navbar);
