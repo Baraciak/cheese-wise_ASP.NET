@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Button} from 'reactstrap';
 
 class EditTextBox extends Component{
     state = {
@@ -25,9 +26,9 @@ class EditTextBox extends Component{
                     <div className="container">
                         {this.state.isSaved
                         ?<small className="text-secondary">Changes saved.</small>
-                        :<button type="submit" className="btn btn-danger">
+                        :<Button type="submit">
                             <big>Save</big>
-                        </button>
+                        </Button>
                         }
                     </div>       
                 </form>

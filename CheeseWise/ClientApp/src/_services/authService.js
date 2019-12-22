@@ -9,7 +9,6 @@ export const authService = {
     logout,
     loginByToken,
     getCurrentUser,
-    hasCompany,
     register
 };
 
@@ -17,13 +16,9 @@ function getCurrentUser(){
     return store.getState().currentUser;
 }
 
-function hasCompany(){
-    return store.getState().hasCompany;
-}
-
 async function register(userData) {
-    const response = await post('https://localhost:44356/api/auth/register', userData);
-    history.push('/login');
+    await post('https://localhost:44356/api/auth/register', userData);
+    history.push('/account/login');
 }
 
 async function login(accountData) {

@@ -34,28 +34,26 @@ class AppTemplate extends Component {
         		<Layout>
 
           			<Switch>
-						<App>
-							<Route exact path={"/"} component={Main}/>
+						<Route exact path={"/"} component={Main}/>
 
-							<Route path={"/category/:categoryId"} exact 
-								render={props => <ListCompanies categoryId={props.match.params.categoryId} />}/>
-								
-							<Route path={"/company/:companyId"} exact 
-								render={props => <Company companyId={props.match.params.companyId}/>}/>
+						<Route path={"/category/:categoryId"} exact 
+							render={props => <ListCompanies categoryId={props.match.params.categoryId} />}/>
+							
+						<Route path={"/company/:companyId"} exact 
+							render={props => <Company companyId={props.match.params.companyId}/>}/>
 
-							{this.props.hasCompany
-							?	
-							<React.Fragment>
-								<ProtectedRoute  path="/action/show-company" exact component={ShowCompany} />
-								<ProtectedRoute  path="/action/edit-company/:id" exact component={EditCompany} />
-							</React.Fragment>
-							:
-							<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
-							}
+						{this.props.hasCompany
+						?	
+						<React.Fragment>
+							<ProtectedRoute  path="/action/show-company" exact component={ShowCompany} />
+							<ProtectedRoute  path="/action/edit-company/:id" exact component={EditCompany} />
+						</React.Fragment>
+						:
+						<ProtectedRoute  path="/action/create-company" exact component={CreateCompany} />
+						}
 
-							<Route path={"/account/register"} exact component={Register} />
-							<Route path={"/account/login"} exact component={Login}/>
-						</App>
+						<Route path={"/account/register"} exact component={Register} />
+						<Route path={"/account/login"} exact component={Login}/>
          			</Switch>
 
        			</Layout>

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import { authService } from '../../_services/authService';
 import Dropdown from '../layout/Dropdown';
 import { connect } from 'react-redux';
 

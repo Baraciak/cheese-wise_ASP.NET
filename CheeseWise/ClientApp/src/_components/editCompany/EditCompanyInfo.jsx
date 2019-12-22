@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import LoadingLogo from '../common/loadingLogo';
 import { Button, Form, FormGroup, Label, Input, Row, Col} from 'reactstrap';
+import { categoryApi } from '../../_helpers/categoryApi';
  
 export default class EditCompanyInfo extends Component{
     constructor(props){
@@ -14,7 +15,13 @@ export default class EditCompanyInfo extends Component{
     }
 
     componentDidMount(){
-        this.setCategoriesApi();
+        this.fetchCategories();
+    }
+
+    //gets all categories for editMode
+    fetchCategories = async() => {
+        const response = await categoryApi.getAll()
+        this.setState({categories: response, isStateLoaded: true})
     }
 
     triggerNotSaved = () =>{
@@ -136,16 +143,5 @@ export default class EditCompanyInfo extends Component{
                 </div>
             </Form>
         );
-    }
-
-    //gets all categories for editMode
-    setCategoriesApi = () => {
-        fetch("https://localhost:44356/api/Categories", {
-        'mode': 'cors'})
-        .then(res => res.json())
-        .then(resJson => {
-            this.setState({categories: resJson, isStateLoaded: true})
-        })
-        .catch(err => console.log(err));
     }
 };
