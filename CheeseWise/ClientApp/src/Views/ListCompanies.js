@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CompaniesTable from '../_components/companies/companiesTable';
+import { companyApi } from '../_helpers/companyApi';
 
 const sortTypes = {
 	ascR: {
@@ -48,9 +49,7 @@ class ListCompanies extends Component {
 		if (['ascN','descN', 'descR','default'].includes(currentSort)) nextSort = 'ascR';
         else if (currentSort === 'ascR') nextSort = 'descR';
 
-		this.setState({
-			currentSort: nextSort
-		});
+		this.setState({currentSort: nextSort});
     }
 
     sortByName = () =>{
@@ -60,11 +59,8 @@ class ListCompanies extends Component {
 		if (['ascN', 'ascR', 'descR','default'].includes(currentSort)) nextSort = 'descN';
 		else if (currentSort === 'descN') nextSort = 'ascN';
 
-		this.setState({
-			currentSort: nextSort
-		});
+		this.setState({currentSort: nextSort});
     }
-
 
     render() {
         return ( 
@@ -75,19 +71,13 @@ class ListCompanies extends Component {
     }
 
     componentDidMount = () =>{
-        this.setCompaniesApi(this.props.categoryId);
+        this.fetchCompanies(this.props.categoryId);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    setCompaniesApi = (categoryId) => {
-        fetch(`https://localhost:44356/api/Companies/Category/${categoryId}`, 
-        {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(res => res.json())
-        .then(resJson => this.setState({companies: resJson}))
-        .catch(err => console.log(err));
+    fetchCompanies = async(categoryId) => {
+        const companies = await companyApi.getByCategoryId(categoryId);       
+        this.setState({companies: companies});
     }
 
 }

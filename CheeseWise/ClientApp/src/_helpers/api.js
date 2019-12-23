@@ -38,14 +38,11 @@ new Promise(
     fetch(url, {
       method: 'DELETE',
       headers: {
-        "Content-Type": 'application/json; charset=utf-8'
+        "Content-Type": 'application/json; charset=utf-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ sessionStorage.token
       }
-    }).then(response => {
-      if(response.ok) {
-        resolve(response)
-      } else {
-        reject(response)
-      }
-    })
+    }).then(response => handleResponse(response)
+      .then(resJson => resolve(resJson)))
   }
 )

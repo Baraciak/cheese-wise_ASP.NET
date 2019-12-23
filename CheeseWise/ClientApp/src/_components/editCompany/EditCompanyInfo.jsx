@@ -3,7 +3,7 @@ import LoadingLogo from '../common/loadingLogo';
 import { Button, Form, FormGroup, Label, Input, Row, Col} from 'reactstrap';
 import { categoryApi } from '../../_helpers/categoryApi';
  
-export default class EditCompanyInfo extends Component{
+class EditCompanyInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -145,3 +145,4 @@ export default class EditCompanyInfo extends Component{
         );
     }
 };
+export default EditCompanyInfo;

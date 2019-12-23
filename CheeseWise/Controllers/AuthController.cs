@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CheeseWise.DB;
 using CheeseWise.Models;
 using CheeseWise.Models.View;
@@ -47,7 +48,6 @@ namespace CheeseWise.Controllers
             //if user is company owner 
             var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == account.Owner.Id).Result;
             var hasCompany = userCompany != null;
-
             var token = _authService.GetToken(account.Owner, hasCompany);
 
             return Ok(new { token, account.Owner, hasCompany });
@@ -84,32 +84,21 @@ namespace CheeseWise.Controllers
             return Ok();
         }
 
-
-//        [HttpPost("validate-token")]
-//        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
-//        public ActionResult<bool> GetUserByToken([FromBody] AuthData data)
-//        {
-//            if (data.Token == null) return BadRequest(new { error = true, token = "no token specified" });
-//
-//            var userId = _authService.DecodeToken(data.Token);
-//            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId).Result;
-//            if (user == null)
-//            {
-//                Unauthorized(new { error = true, token = "no token specified" });
-//            }
-//
-//            var userCompany = _context.Companies.SingleOrDefaultAsync(c => c.Owner.Id == userId).Result;
-//            var hasCompany = userCompany != null;
-//
-//            var newToken = _authService.GetToken(user, hasCompany);
-//            return Ok(new {error = false, token = newToken, user, hasCompany});
-//        }
-
-        [HttpGet("validate-token")]
         [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult<bool> ValidateToken()
+        [HttpPost("refresh-token")]
+        public ActionResult<AuthData> RefreshToken([FromBody]string oldToken)
         {
-            return Ok(new { error = false, authorized = true });
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var userId = _authService.GetUserIdFromToken(oldToken);
+
+            //if user is company owner 
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var userCompany = _context.Companies.FirstOrDefaultAsync(c => c.Owner.Id == userId).Result;
+            var hasCompany = userCompany != null;
+            var token = _authService.GetToken(user, hasCompany);
+
+            return Ok(new { token });
         }
     }
 }

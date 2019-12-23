@@ -10,7 +10,6 @@ import Register from './Views/Register';
 import Company from './Views/Company';
 import Login from './Views/Login';
 import Main from './Views/Main';
-import App from './App';
 
 import {Layout} from './_components/layout/Layout';
 import {ProtectedRoute} from "./_components/protectedRoute"

@@ -9,20 +9,23 @@ export const authService = {
     logout,
     loginByToken,
     getCurrentUser,
-    register
+    register,
+    refreshToken
 };
+
+const URL = "https://localhost:44356/api/auth";
 
 function getCurrentUser(){
     return store.getState().currentUser;
 }
 
 async function register(userData) {
-    await post('https://localhost:44356/api/auth/register', userData);
+    await post(`${URL}/register`, userData);
     history.push('/account/login');
 }
 
 async function login(accountData) {
-    const response = await post('https://localhost:44356/api/auth/login', accountData);
+    const response = await post(`${URL}/login`, accountData);
     sessionStorage.setItem('token', response.token);
     store.dispatch(userActions.add(response.owner));
     store.dispatch(userActions.addCompanyBool(response.hasCompany));
@@ -37,10 +40,9 @@ function logout() {
     store.dispatch(userActions.addCompanyBool(false));
 }
 
-
 async function loginByToken(){
+    await refreshToken();
     const token = sessionStorage.token;
-
     const decodedData = jwt_decode(token);
     const user = {
         id: decodedData.Id,
@@ -48,5 +50,16 @@ async function loginByToken(){
         email: decodedData.Email
     };
     store.dispatch(userActions.add(user));
-    store.dispatch(userActions.addCompanyBool(decodedData.hasCompany));
+    store.dispatch(userActions.addCompanyBool(stringToBool(decodedData.hasCompany)));
+}
+
+async function refreshToken(){
+    const response = await post(`${URL}/refresh-token`, sessionStorage.getItem('token'));
+    sessionStorage.setItem('token', response.token);
+}
+
+//helpers
+function stringToBool(string){
+    if(string === "False") return false
+    else if (string === "True") return true
 }

@@ -15,25 +15,17 @@ import { serviceApi } from '../_helpers/serviceApi';
 import history from "../_helpers/history";
 
 import '../static/css/company.css';
+import { authService } from '../_services/authService';
 
- 
 class EditCompany extends Component {
     constructor(props){
         super(props);
-        //if user is creating new company
-        if(this.props.createMode){
-            this.state = {
-                company: this.props.company,
-                isCompanyLoaded: true,
-                deleteServiceIds: []
-            }
-        }else{
-            this.state = { 
-                showModal: false,
-                company:{},
-                isCompanyLoaded: false, 
-                deleteServiceIds: []
-            }
+
+        this.state = {
+            //if createMode set company object from props
+            company: this.props.createMode ? this.props.company : {},
+            isCompanyLoaded: this.props.createMode ? true : false,
+            deleteServiceIds: []
         }
     }
 
@@ -55,7 +47,7 @@ class EditCompany extends Component {
                                     description={company.description}/>
                         <br />
                         <EditServicesTable onAddService={this.handleAddService}
-                                        onRemoveService={this.removeService} 
+                                        onRemoveService={this.handleRemoveService} 
                                         services={this.state.company.services}/>
                         <Button onClick={this.saveCompany}>Save</Button>
                     </React.Fragment>
@@ -65,15 +57,12 @@ class EditCompany extends Component {
             </React.Fragment>
         );
     }
-
+//editing helpers
     saveCompany = async() => {
         //if create mode post new company
-        if(this.props.createMode){
-           await this.createCompany();
-        }else{
         //else update company
-            await this.updateCompany();
-        }
+        if(this.props.createMode) await this.handleCreateCompany();
+        else await this.handleUpdateCompany();
         history.push('/action/show-company')
     }
 
@@ -118,7 +107,7 @@ class EditCompany extends Component {
         this.setState({company});
     }
     
-    removeService = async (id) => {
+    handleRemoveService = async (id) => {
         let company = {...this.state.company};
         let services = [...company.services].filter(service => service.id !== id);
         company.services = services;
@@ -132,23 +121,32 @@ class EditCompany extends Component {
         
         this.setState({company});
     }
+    
+//handlers
+    handleUpdateCompany = async () => {
+        let company = this.state.company;
+        company.services = this.servicesIdToNull(company)
 
-    updateCompany = async () => {
         this.deleteServices();
-
-        const company = this.state.company;
-        //if temporary service => set id = null for saving in db
-        company.services.map(service => {
-            if( service.tempId === true ) service.id = null;
-            return service;
-        });
-
-        const response = await companyApi.update(company);
-        this.setState({company: response});
+        this.updateCompany(company)
     }
 
-    createCompany = async () => {
-        await companyApi.create(this.state.company);
+    handleCreateCompany = async () => {
+        let company = this.state.company;
+        company.services = this.servicesIdToNull(company);
+        this.createCompany(company);
+    }
+
+//api calls
+    updateCompany = async(company) => {
+        await companyApi.update(company);
+        //no need to update state bcs after this call 
+        //site redirects to showCompany component
+    }
+
+    createCompany = async (company) => {
+        await companyApi.create(company);
+        authService.refreshToken();
         store.dispatch(userActions.addCompanyBool(true));
     }
     
@@ -158,11 +156,21 @@ class EditCompany extends Component {
     }
 
     deleteServices = async() => {
+        //call remove on each service that was removed by user
         this.state.deleteServiceIds.forEach(id => serviceApi.remove(id));
     }
 
+//helpers
     getServiceById = (id) =>{
         return [...this.state.company.services].filter(service => service.id === id)[0];
+    }
+
+    servicesIdToNull(company){
+        //if temporary service(was just created) => set id = null for saving in db
+        return company.services.map(service => {
+            if( service.tempId === true ) service.id = null;
+            return service;
+        });
     }
 };
 

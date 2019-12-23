@@ -17,6 +17,7 @@ import store from '../_redux/store'
 
 
 import '../static/css/company.css';
+import { authService } from '../_services/authService';
  
 class Company extends Component {
     constructor(props){
@@ -94,7 +95,8 @@ class Company extends Component {
     }
 
     deleteCompany = async() => {
-        companyApi.remove(this.props.companyId)
+        await companyApi.remove(this.props.companyId)
+        authService.refreshToken();
         store.dispatch(userActions.addCompanyBool(false));
         history.push('/');
     }

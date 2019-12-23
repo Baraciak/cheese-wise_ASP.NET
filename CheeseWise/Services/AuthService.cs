@@ -67,12 +67,12 @@ namespace CheeseWise.Services
         }
 
 
-        public int DecodeToken(string jwtToken)
+        public int GetUserIdFromToken(string jwtToken)
         {
             var handler = new JwtSecurityTokenHandler();
             var decodedToken = handler.ReadJwtToken(jwtToken);
             //get userId stored in token
-            int userId = Convert.ToInt32(decodedToken.Claims.ToList()[0].Value);
+            var userId = Convert.ToInt32(decodedToken.Claims.ToList()[0].Value);
 
             return userId;
         }

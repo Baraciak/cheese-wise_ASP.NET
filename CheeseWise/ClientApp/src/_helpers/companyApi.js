@@ -14,6 +14,10 @@ const getById = async(id) => {
     return await get(`${url}/${id}`);
 }
 
+const getByCategoryId = async(id) => {
+    return await get(`${url}/category/${id}`);
+}
+
 const update = async (company) => {
     return await put(`${url}/${company.id}`, company);
 }
@@ -22,14 +26,15 @@ const create = async (company) => {
     return await post(`${url}`, company);
 }
 
-const remove = async (company) => {
-    return await destroy(`${url}`, company);
+const remove = async (id) => {
+    return await destroy(`${url}/${id}`);
 }
 
 export const companyApi = {
     getAll,
     getById,
     getByUserId,
+    getByCategoryId,
     update,
     create,
     remove

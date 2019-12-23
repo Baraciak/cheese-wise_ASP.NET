@@ -12,6 +12,6 @@ namespace CheeseWise.Services.Abstraction
         string HashPassword(string password);
         bool VerifyPassword(string actualPassword, string hashedPassword);
         string GetToken(User user, bool hasCompany);
-        int DecodeToken(string token);
+        int GetUserIdFromToken(string token);
     }
 }
