@@ -43,6 +43,7 @@ namespace CheeseWise.DB
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=CheeseWiseDB;Username=postgres;Password=postgres");
+//        cheesewise:europe-west6:postgres
+            => optionsBuilder.UseNpgsql("Host=34.65.219.173;Database=cheesewise;Username=postgres;Password=postgres");
     }
 }
