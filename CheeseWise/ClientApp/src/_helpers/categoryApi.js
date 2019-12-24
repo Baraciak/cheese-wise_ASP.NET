@@ -1,6 +1,6 @@
 import {get, put, post, destroy} from './api';
 
-const url = 'https://localhost:44356/api/categories';
+const url = 'https://cheesewise20191223111821.azurewebsites.net/api/categories';
 
 const getAll = async() => {
     return await get(`${url}`);
