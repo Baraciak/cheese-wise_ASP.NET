@@ -85,6 +85,9 @@ namespace CheeseWise
                 });
             });
 
+            services.AddMvc(option => option.EnableEndpointRouting = false)
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyOrigin",
@@ -94,12 +97,6 @@ namespace CheeseWise
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
-        
-
-
-        services.AddMvc(option => option.EnableEndpointRouting = false)
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
 
             //adding parameters for authService constructor
             services.AddSingleton<IAuthService>(
@@ -136,13 +133,14 @@ namespace CheeseWise
             app.UseAuthentication();
 
             app.UseRouting();
+
             app.UseCors("AllowAnyOrigin");
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}").RequireCors("AllowAnyOrigin");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>

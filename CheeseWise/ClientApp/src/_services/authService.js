@@ -13,8 +13,8 @@ export const authService = {
     refreshToken
 };
 
-const URL = "https://localhost:44356/api/auth";
-// const URL = 'https://cheesewise.azurewebsites.net/api/auth';
+// const URL = "https://localhost:44356/api/auth";
+const URL = 'https://cheesewise.azurewebsites.net/api/auth';
 
 
 function getCurrentUser(){
