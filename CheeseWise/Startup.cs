@@ -30,10 +30,7 @@ namespace CheeseWise
         {
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
             services.AddDbContext<CheeseWiseDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DbConnString")));
@@ -55,28 +52,25 @@ namespace CheeseWise
                 ValidateLifetime = true,
                 LifetimeValidator = (before, expires, token, parameters) =>
                 {
-                    //If expiration has a date, add 2 days to it
+                    //If expiration has a date, add 1 hour to it
                     if (expires.HasValue)
                         return expires.Value.AddHours(1) > DateTime.Now;
-                    
+
                     return false;
-                    
+
                 },
                 ValidAudience = Configuration["Jwt:Site"],
                 ValidIssuer = Configuration["Jwt:Site"],
                 IssuerSigningKey = symmetricSecurityKey
             };
-//
-//            services.AddIdentity<User, IdentityRole>()
-//                .AddEntityFrameworkStores<ApplicationDbContext>()
-//                .AddDefaultTokenProviders();
 
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
+            }).AddJwtBearer(options =>
+            {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = tokenValidationParameters;
@@ -89,16 +83,21 @@ namespace CheeseWise
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     policy.RequireAuthenticatedUser().Build();
                 });
-
-                options.AddPolicy("User", policy =>
-                {
-                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-                    policy.RequireAuthenticatedUser().RequireRole("User").Build();
-                });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                    builder => builder
+                        //                .WithOrigins("https://cheesewise.azurewebsites.net","https://localhost:44356")
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+        
 
-            services.AddMvc(option => option.EnableEndpointRouting = false)
+
+        services.AddMvc(option => option.EnableEndpointRouting = false)
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 
@@ -133,24 +132,17 @@ namespace CheeseWise
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-
-
-            app.UseCors(builder => builder.WithOrigins("https://localhost:44356")
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowAnyOrigin());
-
-
-
             app.UseAuthorization();
             app.UseAuthentication();
 
             app.UseRouting();
+            app.UseCors("AllowAnyOrigin");
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}").RequireCors("AllowAnyOrigin");
             });
 
             app.UseSpa(spa =>
