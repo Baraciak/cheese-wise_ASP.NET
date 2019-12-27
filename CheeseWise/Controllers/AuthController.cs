@@ -3,9 +3,6 @@ using CheeseWise.DB;
 using CheeseWise.Models;
 using CheeseWise.Models.View;
 using CheeseWise.Services.Abstraction;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,7 +81,6 @@ namespace CheeseWise.Controllers
             return Ok();
         }
 
-        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("refresh-token")]
         public ActionResult<AuthData> RefreshToken([FromBody]string oldToken)
         {

@@ -88,15 +88,6 @@ namespace CheeseWise
             services.AddMvc(option => option.EnableEndpointRouting = false)
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAnyOrigin",
-                    builder => builder
-                        //                .WithOrigins("https://cheesewise.azurewebsites.net","https://localhost:44356")
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
 
             //adding parameters for authService constructor
             services.AddSingleton<IAuthService>(
@@ -125,23 +116,17 @@ namespace CheeseWise
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
-            app.UseAuthorization();
-            app.UseAuthentication();
-
             app.UseRouting();
-
-            app.UseCors("AllowAnyOrigin");
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseSpa(spa =>
             {
@@ -152,6 +137,9 @@ namespace CheeseWise
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseMvc();
         }

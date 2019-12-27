@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CheeseWise.Controllers
 {
@@ -83,24 +81,6 @@ namespace CheeseWise.Controllers
             }
 
             return NoContent();
-        }
-
-
-        //unused because it updates in company
-        // POST: api/Services
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<Service>> PostService(Service service)
-        {
-//            service = _context.Companies.FirstOrDefault(c => c.Id == service.Company.Id);
-//
-//            _context.Services.Add(service);
-//
-            await _context.SaveChangesAsync();
-
-            return Ok();
         }
 
         // DELETE: api/Services/5

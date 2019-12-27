@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheeseWise.DB;
 using CheeseWise.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CheeseWise.Controllers
 {
@@ -51,7 +49,6 @@ namespace CheeseWise.Controllers
             return Ok(company);
         }
 
-        //custom route
         // GET: api/Companies/Category/5
         [HttpGet("Category/{id}")]
         public async Task<List<Company>> GetCompaniesByCategoryId(int id)
@@ -65,7 +62,6 @@ namespace CheeseWise.Controllers
             return companies;
         }
 
-        //custom route
         // GET: api/Companies/Category/5
         [HttpGet("User/{id}")]
         public async Task<ActionResult<Company>> GetCompanyByUserId(int id)
@@ -78,11 +74,7 @@ namespace CheeseWise.Controllers
             return Ok(new { company, error = false });
         }
 
-        // PUT: api/Companies/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutCompany(int id, Company company)
         {
             if (id != company.Id)
@@ -90,12 +82,9 @@ namespace CheeseWise.Controllers
                 return BadRequest();
             }
 
-
-//            _context.Entry(company).State = EntityState.Modified;
             var entityCompany = _context.Companies
                                         .Include(c => c.Category)
                                         .Include(c => c.Owner)
-//                                        .Include(c => c.Services)
                                         .FirstOrDefault(c => c.Id == id);
 
             if (entityCompany == null)
@@ -121,10 +110,6 @@ namespace CheeseWise.Controllers
 
             _context.Companies.Update(entityCompany);
 
-
-//            _context.Services.Remove(company);
-//            await _context.SaveChangesAsync();
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -143,10 +128,7 @@ namespace CheeseWise.Controllers
         }
 
         // POST: api/Companies
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Company>> PostCompany(Company company)
         {
             company.Owner = await _context.Users.FirstOrDefaultAsync(u => u.Id == company.Owner.Id);
@@ -160,7 +142,6 @@ namespace CheeseWise.Controllers
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        [Authorize(policy: JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Company>> DeleteCompany(int id)
         {
             //including services for cascade delete

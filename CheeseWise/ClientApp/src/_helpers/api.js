@@ -13,9 +13,9 @@ const apiCall = (url, method, body, resolve, reject) =>
   fetch(url, {
     method: method,
     headers: {
-      "Content-Type": 'application/json; charset=utf-8',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer '+ sessionStorage.token
+      "Content-Type": "application/json; charset=utf-8",
+      "Accept": "application/json",
+      'Authorization': "Bearer "+ sessionStorage.token
     },
     body: JSON.stringify(body)
   })

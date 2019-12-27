@@ -1,6 +1,5 @@
 import {get, put, post, destroy} from './api';
 
-// const url = 'https://localhost:44356/api/companies';
 const url = 'https://cheesewise.azurewebsites.net/api/companies';
 
 const getAll = async() => {
