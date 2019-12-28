@@ -31,7 +31,6 @@ class AppTemplate extends Component {
     	return (         
       		<Router history={history}>
         		<Layout>
-
           			<Switch>
 						<Route exact path={"/"} component={Main}/>
 
@@ -54,7 +53,6 @@ class AppTemplate extends Component {
 						<Route path={"/account/register"} exact component={Register} />
 						<Route path={"/account/login"} exact component={Login}/>
          			</Switch>
-
        			</Layout>
       		</Router>
     	);

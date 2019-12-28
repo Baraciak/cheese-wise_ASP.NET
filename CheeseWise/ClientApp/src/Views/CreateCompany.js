@@ -7,7 +7,7 @@ class CreateCompany extends Component{
         company:
         {
             name: "Add company name",
-            category: {name: "Add Category"},
+            category: {name: "Add Category", id: 1},
             website: "Add company website link",
             location: "Add company location",
             email: "cleaning1@gmail.com",

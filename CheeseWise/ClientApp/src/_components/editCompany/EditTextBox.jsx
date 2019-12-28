@@ -17,12 +17,19 @@ class EditTextBox extends Component{
     }
 
     render(){
-        const {description} = this.props;
+        const {description, createMode} = this.props;
         return ( 
             <div className="form-group">
                 <form onSubmit={this.save}>
-                    <textarea onChange={this.triggerNotSaved} name="description" className="form-control text-justify" 
-                            rows="5" id="description" defaultValue={description} />
+                    {createMode
+                    ?<textarea onChange={this.triggerNotSaved} name="description" className="form-control text-justify" 
+                                rows="5" id="description" 
+                                placeholder={description} />
+                    :<textarea onChange={this.triggerNotSaved} name="description" className="form-control text-justify" 
+                                rows="5" id="description" 
+                                defaultValue={description} />
+                    }
+
                     <div className="container">
                         {this.state.isSaved
                         ?<small className="text-secondary">Changes saved.</small>

@@ -44,7 +44,8 @@ class EditCompany extends Component {
                         <EditCompanyInfo onSaveCompanyInfo={this.handleSaveCompanyInfo} 
                                         company={company}/>
                         <EditTextBox onSaveDescription={this.handleSaveDescription}
-                                    description={company.description}/>
+                                    description={company.description}
+                                    createMode={this.props.createMode}/>
                         <br />
                         <EditServicesTable onAddService={this.handleAddService}
                                         onRemoveService={this.handleRemoveService} 
